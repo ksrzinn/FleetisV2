@@ -29,5 +29,12 @@ leakage inside an authenticated request — the middleware is the single enforce
 Some tables (e.g. the test-only `tenant_probes` table) are created after the main
 migrations run. Moving RLS enablement into `database/migrations/rls/` lets us re-run
 RLS application after every epic's new tables land without editing the original migration.
-The `TestCase::setUp()` calls this path explicitly so tests always have RLS enforced on
-test-only tables too.
+`AppServiceProvider::boot()` registers both `database/migrations/tests/` (only in the
+`testing` environment) and `database/migrations/rls/` so tests always have RLS enforced
+on test-only tables too.
+
+The `RlsCoverageTest` is the load-bearing guardrail: it inspects
+`information_schema.columns` for every table with a `company_id` column and asserts each
+one has `FORCE ROW LEVEL SECURITY` enabled and a tenant-isolation policy in
+`pg_policies`. Adding a new tenant-scoped table without wiring it into
+`database/migrations/rls/` will fail this test in CI.
