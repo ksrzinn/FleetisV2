@@ -3,7 +3,6 @@
 namespace Tests\Feature\Tenancy;
 
 use App\Models\User;
-use App\Modules\Tenancy\Http\Middleware\EnsureTenantContext;
 use App\Modules\Tenancy\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;

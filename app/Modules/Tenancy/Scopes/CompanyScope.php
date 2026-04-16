@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Scope;
 
 class CompanyScope implements Scope
 {
+    /**
+     * @param  Builder<Model>  $builder
+     */
     public function apply(Builder $builder, Model $model): void
     {
         if ($companyId = auth()->user()?->company_id) {

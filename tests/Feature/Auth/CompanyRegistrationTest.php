@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Tenancy\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class CompanyRegistrationTest extends TestCase
@@ -32,7 +33,7 @@ class CompanyRegistrationTest extends TestCase
         $this->assertSame($company->id, $user->company_id);
 
         $this->assertSame(3, Role::where('company_id', $company->id)->count());
-        app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($company->id);
+        app(PermissionRegistrar::class)->setPermissionsTeamId($company->id);
         $this->assertTrue($user->hasRole('Admin'));
     }
 

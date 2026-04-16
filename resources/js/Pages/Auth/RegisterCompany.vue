@@ -36,81 +36,117 @@ export default {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="company_name" value="Company name" />
+                <InputLabel
+                    for="company_name"
+                    value="Company name"
+                />
                 <TextInput
                     id="company_name"
+                    v-model="form.company_name"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.company_name"
                     required
                     autofocus
                 />
-                <InputError class="mt-2" :message="form.errors.company_name" />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors.company_name"
+                />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="cnpj" value="CNPJ (14 digits)" />
+                <InputLabel
+                    for="cnpj"
+                    value="CNPJ (14 digits)"
+                />
                 <TextInput
                     id="cnpj"
+                    v-model="form.cnpj"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.cnpj"
                     required
                     maxlength="14"
                 />
-                <InputError class="mt-2" :message="form.errors.cnpj" />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors.cnpj"
+                />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="name" value="Your name" />
+                <InputLabel
+                    for="name"
+                    value="Your name"
+                />
                 <TextInput
                     id="name"
+                    v-model="form.name"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.name"
                     required
                     autocomplete="name"
                 />
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors.name"
+                />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+                <InputLabel
+                    for="email"
+                    value="Email"
+                />
                 <TextInput
                     id="email"
+                    v-model="form.email"
                     type="email"
                     class="mt-1 block w-full"
-                    v-model="form.email"
                     required
                     autocomplete="username"
                 />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors.email"
+                />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel
+                    for="password"
+                    value="Password"
+                />
                 <TextInput
                     id="password"
+                    v-model="form.password"
                     type="password"
                     class="mt-1 block w-full"
-                    v-model="form.password"
                     required
                     autocomplete="new-password"
                 />
-                <InputError class="mt-2" :message="form.errors.password" />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors.password"
+                />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
+                <InputLabel
+                    for="password_confirmation"
+                    value="Confirm Password"
+                />
                 <TextInput
                     id="password_confirmation"
+                    v-model="form.password_confirmation"
                     type="password"
                     class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
                     required
                     autocomplete="new-password"
                 />
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors.password_confirmation"
+                />
             </div>
 
             <div class="mt-4 flex items-center justify-end">
@@ -120,7 +156,11 @@ export default {
                 >
                     Already registered?
                 </Link>
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <PrimaryButton
+                    class="ms-4"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
                     Register
                 </PrimaryButton>
             </div>

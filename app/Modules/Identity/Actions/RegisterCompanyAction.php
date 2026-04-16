@@ -12,6 +12,9 @@ class RegisterCompanyAction
 {
     public function __construct(private SeedCompanyRolesAction $seedRoles) {}
 
+    /**
+     * @param  array<string, mixed>  $input
+     */
     public function handle(array $input): User
     {
         return DB::transaction(function () use ($input) {
