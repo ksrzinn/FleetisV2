@@ -25,5 +25,7 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('testing')) {
             $this->loadMigrationsFrom(database_path('migrations/tests'));
         }
+
+        $this->loadMigrationsFrom(database_path('migrations/rls'));
     }
 }

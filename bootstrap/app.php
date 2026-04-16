@@ -16,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        $middleware->alias([
+            'tenant' => \App\Modules\Tenancy\Http\Middleware\EnsureTenantContext::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
