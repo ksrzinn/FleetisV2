@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    private array $tables = ['users', 'tenant_probes'];
+    private array $tables = ['users', 'tenant_probes', 'roles', 'model_has_roles', 'model_has_permissions'];
 
     public function up(): void
     {
