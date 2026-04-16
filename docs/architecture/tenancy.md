@@ -51,6 +51,11 @@ cannot read or write another tenant's rows.
 
 Any failure rolls back all four steps — there is no half-created tenant.
 
+The `User` model implements `MustVerifyEmail`, so `/dashboard` (guarded by `verified`)
+will bounce a freshly-signed-up user to `/verify-email`. In local dev with
+`MAIL_MAILER=log`, the verification link is written to `storage/logs/laravel.log` —
+grep for `verify-email/` to find it.
+
 ## Test harness
 
 `Tests\TenantTestCase` exposes `actingAsTenant(User $user)` which logs in,
