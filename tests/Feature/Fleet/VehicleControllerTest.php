@@ -49,17 +49,17 @@ class VehicleControllerTest extends TenantTestCase
         $type = VehicleType::factory()->create();
 
         $response = $this->actingAsTenant($user)->post('/vehicles', [
-            'kind'            => 'vehicle',
+            'kind' => 'vehicle',
             'vehicle_type_id' => $type->id,
-            'license_plate'   => 'ABC-1234',
-            'brand'           => 'Volvo',
-            'model'           => 'FH',
-            'year'            => 2020,
+            'license_plate' => 'ABC-1234',
+            'brand' => 'Volvo',
+            'model' => 'FH',
+            'year' => 2020,
         ]);
 
         $response->assertRedirect('/vehicles');
         $this->assertDatabaseHas('vehicles', [
-            'company_id'    => $user->company_id,
+            'company_id' => $user->company_id,
             'license_plate' => 'ABC-1234',
         ]);
     }
@@ -70,12 +70,12 @@ class VehicleControllerTest extends TenantTestCase
         $type = VehicleType::factory()->create();
 
         $response = $this->actingAsTenant($user)->post('/vehicles', [
-            'kind'            => 'vehicle',
+            'kind' => 'vehicle',
             'vehicle_type_id' => $type->id,
-            'license_plate'   => 'ABC-9999',
-            'brand'           => 'Volvo',
-            'model'           => 'FH',
-            'year'            => 2020,
+            'license_plate' => 'ABC-9999',
+            'brand' => 'Volvo',
+            'model' => 'FH',
+            'year' => 2020,
         ]);
 
         $response->assertForbidden();
@@ -88,12 +88,12 @@ class VehicleControllerTest extends TenantTestCase
         $vehicle = Vehicle::factory()->create(['company_id' => $user->company_id, 'vehicle_type_id' => $type->id]);
 
         $response = $this->actingAsTenant($user)->put("/vehicles/{$vehicle->id}", [
-            'kind'            => 'vehicle',
+            'kind' => 'vehicle',
             'vehicle_type_id' => $type->id,
-            'license_plate'   => 'XYZ-5678',
-            'brand'           => 'Scania',
-            'model'           => 'R450',
-            'year'            => 2022,
+            'license_plate' => 'XYZ-5678',
+            'brand' => 'Scania',
+            'model' => 'R450',
+            'year' => 2022,
         ]);
 
         $response->assertRedirect('/vehicles');
@@ -107,12 +107,12 @@ class VehicleControllerTest extends TenantTestCase
         $otherVehicle = Vehicle::factory()->create(['vehicle_type_id' => $type->id]);
 
         $response = $this->actingAsTenant($user)->put("/vehicles/{$otherVehicle->id}", [
-            'kind'            => 'vehicle',
+            'kind' => 'vehicle',
             'vehicle_type_id' => $type->id,
-            'license_plate'   => 'ZZZ-0000',
-            'brand'           => 'x',
-            'model'           => 'x',
-            'year'            => 2020,
+            'license_plate' => 'ZZZ-0000',
+            'brand' => 'x',
+            'model' => 'x',
+            'year' => 2020,
         ]);
 
         $response->assertNotFound();

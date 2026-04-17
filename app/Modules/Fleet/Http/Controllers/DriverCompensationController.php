@@ -18,8 +18,8 @@ class DriverCompensationController extends Controller
         $this->authorize('view', $driver);
 
         return Inertia::render('Fleet/Drivers/Compensations/Index', [
-            'driver'  => $driver,
-            'active'  => $driver->activeCompensations()->get(),
+            'driver' => $driver,
+            'active' => $driver->activeCompensations()->get(),
             'history' => $driver->compensations()->whereNotNull('effective_to')->orderByDesc('effective_from')->get(),
             'canEdit' => auth()->user()->can('create', DriverCompensation::class),
         ]);

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VehicleType extends Model
 {
+    /** @use HasFactory<VehicleTypeFactory> */
     use HasFactory;
 
     protected $fillable = ['code', 'label', 'requires_trailer'];
@@ -20,6 +21,7 @@ class VehicleType extends Model
         return VehicleTypeFactory::new();
     }
 
+    /** @return HasMany<Vehicle, $this> */
     public function vehicles(): HasMany
     {
         return $this->hasMany(Vehicle::class);

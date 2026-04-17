@@ -86,7 +86,7 @@ class DriverControllerTest extends TenantTestCase
 
         $response = $this->actingAsTenant($user)->put("/drivers/{$otherDriver->id}", [
             'name' => 'Hack',
-            'cpf'  => '529.982.247-25',
+            'cpf' => '529.982.247-25',
         ]);
 
         $response->assertNotFound();

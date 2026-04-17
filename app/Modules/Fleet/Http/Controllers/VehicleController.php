@@ -26,9 +26,9 @@ class VehicleController extends Controller
             ->withQueryString();
 
         return Inertia::render('Fleet/Vehicles/Index', [
-            'vehicles'     => $vehicles,
+            'vehicles' => $vehicles,
             'vehicleTypes' => VehicleType::orderBy('label')->get(['id', 'code', 'label', 'requires_trailer']),
-            'filters'      => request()->only('active', 'search'),
+            'filters' => request()->only('active', 'search'),
         ]);
     }
 
@@ -55,7 +55,7 @@ class VehicleController extends Controller
         $this->authorize('update', $vehicle);
 
         return Inertia::render('Fleet/Vehicles/Form', [
-            'vehicle'      => $vehicle->load('vehicleType'),
+            'vehicle' => $vehicle->load('vehicleType'),
             'vehicleTypes' => VehicleType::orderBy('label')->get(['id', 'code', 'label', 'requires_trailer']),
         ]);
     }

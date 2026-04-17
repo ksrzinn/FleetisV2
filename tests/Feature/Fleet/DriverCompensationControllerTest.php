@@ -13,7 +13,7 @@ class DriverCompensationControllerTest extends TenantTestCase
 
     public function test_operator_can_view_compensations_page(): void
     {
-        $user   = $this->makeUserWithRole('Operator');
+        $user = $this->makeUserWithRole('Operator');
         $driver = Driver::factory()->create(['company_id' => $user->company_id]);
         $response = $this->actingAsTenant($user)->get("/drivers/{$driver->id}/compensations");
         $response->assertOk()->assertInertia(fn ($page) => $page->component('Fleet/Drivers/Compensations/Index'));
@@ -21,7 +21,7 @@ class DriverCompensationControllerTest extends TenantTestCase
 
     public function test_operator_can_create_percentage_compensation(): void
     {
-        $user   = $this->makeUserWithRole('Operator');
+        $user = $this->makeUserWithRole('Operator');
         $driver = Driver::factory()->create(['company_id' => $user->company_id]);
         $response = $this->actingAsTenant($user)->post("/drivers/{$driver->id}/compensations", [
             'type' => 'percentage', 'percentage' => 10.5, 'effective_from' => '2026-01-01',
@@ -34,7 +34,7 @@ class DriverCompensationControllerTest extends TenantTestCase
 
     public function test_creating_same_type_closes_previous(): void
     {
-        $user   = $this->makeUserWithRole('Operator');
+        $user = $this->makeUserWithRole('Operator');
         $driver = Driver::factory()->create(['company_id' => $user->company_id]);
 
         DriverCompensation::factory()->create([
@@ -52,7 +52,7 @@ class DriverCompensationControllerTest extends TenantTestCase
 
     public function test_driver_can_have_two_active_types_simultaneously(): void
     {
-        $user   = $this->makeUserWithRole('Operator');
+        $user = $this->makeUserWithRole('Operator');
         $driver = Driver::factory()->create(['company_id' => $user->company_id]);
 
         $this->actingAsTenant($user)->post("/drivers/{$driver->id}/compensations", [
@@ -67,7 +67,7 @@ class DriverCompensationControllerTest extends TenantTestCase
 
     public function test_financial_cannot_create_compensation(): void
     {
-        $user   = $this->makeUserWithRole('Financial');
+        $user = $this->makeUserWithRole('Financial');
         $driver = Driver::factory()->create(['company_id' => $user->company_id]);
         $response = $this->actingAsTenant($user)->post("/drivers/{$driver->id}/compensations", [
             'type' => 'percentage', 'percentage' => 10.00, 'effective_from' => '2026-01-01',
@@ -81,8 +81,8 @@ class DriverCompensationControllerTest extends TenantTestCase
         $otherDriver = Driver::factory()->create(); // different company
 
         $response = $this->actingAsTenant($user)->post("/drivers/{$otherDriver->id}/compensations", [
-            'type'           => 'percentage',
-            'percentage'     => 10.00,
+            'type' => 'percentage',
+            'percentage' => 10.00,
             'effective_from' => now()->toDateString(),
         ]);
 
@@ -91,9 +91,9 @@ class DriverCompensationControllerTest extends TenantTestCase
 
     public function test_compensation_page_does_not_leak_other_company_driver(): void
     {
-        $user        = $this->makeUserWithRole('Operator');
+        $user = $this->makeUserWithRole('Operator');
         $otherDriver = Driver::factory()->create();
-        $response    = $this->actingAsTenant($user)->get("/drivers/{$otherDriver->id}/compensations");
+        $response = $this->actingAsTenant($user)->get("/drivers/{$otherDriver->id}/compensations");
         $response->assertNotFound();
     }
 }

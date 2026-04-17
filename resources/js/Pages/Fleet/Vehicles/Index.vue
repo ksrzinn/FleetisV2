@@ -172,8 +172,9 @@ export default {
                             :href="link.url"
                             :class="[link.active ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50',
                                      'rounded border px-3 py-1 text-sm']"
-                            v-html="link.label"
-                        />
+                        >
+                            <span v-html="link.label" />
+                        </Link>
                         <span
                             v-else
                             class="rounded border px-3 py-1 text-sm text-gray-400"

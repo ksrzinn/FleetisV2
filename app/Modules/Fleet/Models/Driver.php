@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Driver extends Model
 {
+    /** @use HasFactory<DriverFactory> */
     use BelongsToCompany, HasFactory, SoftDeletes;
 
     protected $fillable = ['name', 'phone', 'birth_date', 'cpf', 'active'];
@@ -22,11 +23,13 @@ class Driver extends Model
         return DriverFactory::new();
     }
 
+    /** @return HasMany<DriverCompensation, $this> */
     public function compensations(): HasMany
     {
         return $this->hasMany(DriverCompensation::class);
     }
 
+    /** @return HasMany<DriverCompensation, $this> */
     public function activeCompensations(): HasMany
     {
         return $this->hasMany(DriverCompensation::class)->whereNull('effective_to');

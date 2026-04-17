@@ -7,6 +7,7 @@ use App\Modules\Fleet\Models\DriverCompensation;
 use App\Modules\Tenancy\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<DriverCompensation> */
 class DriverCompensationFactory extends Factory
 {
     protected $model = DriverCompensation::class;
@@ -14,22 +15,22 @@ class DriverCompensationFactory extends Factory
     public function definition(): array
     {
         return [
-            'company_id'     => Company::factory(),
-            'driver_id'      => Driver::factory(),
-            'type'           => 'percentage',
-            'percentage'     => $this->faker->randomFloat(2, 1, 30),
-            'fixed_amount'   => null,
+            'company_id' => Company::factory(),
+            'driver_id' => Driver::factory(),
+            'type' => 'percentage',
+            'percentage' => $this->faker->randomFloat(2, 1, 30),
+            'fixed_amount' => null,
             'monthly_salary' => null,
             'effective_from' => now()->toDateString(),
-            'effective_to'   => null,
+            'effective_to' => null,
         ];
     }
 
     public function fixedPerFreight(float $amount = 500.00): static
     {
         return $this->state([
-            'type'         => 'fixed_per_freight',
-            'percentage'   => null,
+            'type' => 'fixed_per_freight',
+            'percentage' => null,
             'fixed_amount' => $amount,
         ]);
     }
@@ -37,8 +38,8 @@ class DriverCompensationFactory extends Factory
     public function monthlySalary(float $salary = 3000.00): static
     {
         return $this->state([
-            'type'           => 'monthly_salary',
-            'percentage'     => null,
+            'type' => 'monthly_salary',
+            'percentage' => null,
             'monthly_salary' => $salary,
         ]);
     }

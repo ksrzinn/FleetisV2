@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Vehicle extends Model
 {
+    /** @use HasFactory<VehicleFactory> */
     use BelongsToCompany, HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -25,6 +26,7 @@ class Vehicle extends Model
         return VehicleFactory::new();
     }
 
+    /** @return BelongsTo<VehicleType, $this> */
     public function vehicleType(): BelongsTo
     {
         return $this->belongsTo(VehicleType::class);

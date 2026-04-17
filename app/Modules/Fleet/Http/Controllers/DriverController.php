@@ -32,6 +32,7 @@ class DriverController extends Controller
     public function create(): Response
     {
         $this->authorize('create', Driver::class);
+
         return Inertia::render('Fleet/Drivers/Form');
     }
 
@@ -39,12 +40,14 @@ class DriverController extends Controller
     {
         $this->authorize('create', Driver::class);
         $action->handle($request->validated());
+
         return redirect()->route('drivers.index')->with('success', 'Motorista criado com sucesso.');
     }
 
     public function edit(Driver $driver): Response
     {
         $this->authorize('update', $driver);
+
         return Inertia::render('Fleet/Drivers/Form', ['driver' => $driver]);
     }
 
@@ -52,6 +55,7 @@ class DriverController extends Controller
     {
         $this->authorize('update', $driver);
         $action->handle($driver, $request->validated());
+
         return redirect()->route('drivers.index')->with('success', 'Motorista atualizado com sucesso.');
     }
 
@@ -59,6 +63,7 @@ class DriverController extends Controller
     {
         $this->authorize('delete', $driver);
         $driver->delete();
+
         return redirect()->route('drivers.index')->with('success', 'Motorista removido com sucesso.');
     }
 }

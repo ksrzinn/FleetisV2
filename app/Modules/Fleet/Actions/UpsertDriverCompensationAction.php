@@ -18,14 +18,14 @@ class UpsertDriverCompensationAction
                 ->update(['effective_to' => now()->toDateString()]);
 
             return DriverCompensation::create([
-                'company_id'     => $driver->company_id,
-                'driver_id'      => $driver->id,
-                'type'           => $data['type'],
-                'percentage'     => $data['percentage'] ?? null,
-                'fixed_amount'   => $data['fixed_amount'] ?? null,
+                'company_id' => $driver->company_id,
+                'driver_id' => $driver->id,
+                'type' => $data['type'],
+                'percentage' => $data['percentage'] ?? null,
+                'fixed_amount' => $data['fixed_amount'] ?? null,
                 'monthly_salary' => $data['monthly_salary'] ?? null,
                 'effective_from' => $data['effective_from'],
-                'effective_to'   => null,
+                'effective_to' => null,
             ]);
         });
     }

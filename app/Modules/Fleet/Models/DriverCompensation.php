@@ -14,17 +14,18 @@ use Parental\HasChildren;
 
 class DriverCompensation extends Model
 {
+    /** @use HasFactory<DriverCompensationFactory> */
     use BelongsToCompany, HasChildren, HasFactory;
 
     protected $table = 'driver_compensations';
 
-    protected $childColumn = 'type';
+    protected string $childColumn = 'type';
 
     /** @var array<string, class-string> */
     protected $childTypes = [
-        'percentage'        => PercentageCompensation::class,
+        'percentage' => PercentageCompensation::class,
         'fixed_per_freight' => FixedPerFreightCompensation::class,
-        'monthly_salary'    => MonthlySalaryCompensation::class,
+        'monthly_salary' => MonthlySalaryCompensation::class,
     ];
 
     protected $fillable = [
@@ -34,7 +35,7 @@ class DriverCompensation extends Model
 
     protected $casts = [
         'effective_from' => 'date',
-        'effective_to'   => 'date',
+        'effective_to' => 'date',
     ];
 
     protected static function newFactory(): DriverCompensationFactory
@@ -42,6 +43,7 @@ class DriverCompensation extends Model
         return DriverCompensationFactory::new();
     }
 
+    /** @return BelongsTo<Driver, $this> */
     public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class);

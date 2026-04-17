@@ -10,6 +10,7 @@ class UpdateDriverAction
     public function handle(Driver $driver, array $data): Driver
     {
         $driver->update($data);
+
         return $driver->fresh();
     }
 }

@@ -18,7 +18,7 @@ export default {
         canEdit: Boolean,
     },
 
-    setup(props) {
+    setup() {
         const form = useForm({
             type:           'percentage',
             percentage:     '',
