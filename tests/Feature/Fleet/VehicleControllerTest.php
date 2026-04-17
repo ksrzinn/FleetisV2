@@ -115,7 +115,7 @@ class VehicleControllerTest extends TenantTestCase
             'year'            => 2020,
         ]);
 
-        $response->assertForbidden();
+        $response->assertNotFound();
     }
 
     public function test_admin_can_delete_vehicle(): void
