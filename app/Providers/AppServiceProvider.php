@@ -29,10 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
 
-        if ($this->app->environment('testing')) {
-            $this->loadMigrationsFrom(database_path('migrations/tests'));
-        }
-
         $this->loadMigrationsFrom(database_path('migrations/rls'));
 
         Gate::policy(Vehicle::class, VehiclePolicy::class);
