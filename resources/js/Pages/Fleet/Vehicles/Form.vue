@@ -1,9 +1,11 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, Link, useForm } from '@inertiajs/vue3'
+import { vMaska } from 'maska/vue'
 
 export default {
-    components: { AuthenticatedLayout, Head },
+    components: { AuthenticatedLayout, Head, Link },
+    directives: { maska: vMaska },
 
     props: {
         vehicle: { type: Object, default: null },
@@ -22,7 +24,6 @@ export default {
             notes:           props.vehicle?.notes ?? '',
             active:          props.vehicle?.active ?? true,
         })
-
         return { form }
     },
 
@@ -52,189 +53,143 @@ export default {
     <Head :title="pageTitle" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">
-                {{ pageTitle }}
-            </h2>
+            <div class="flex items-center gap-3">
+                <Link href="/vehicles" class="text-gray-400 hover:text-gray-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </Link>
+                <h1 class="text-xl font-semibold text-gray-900">{{ pageTitle }}</h1>
+            </div>
         </template>
 
-        <div class="py-6">
-            <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
-                <form
-                    class="space-y-6 rounded-lg bg-white p-6 shadow"
-                    @submit.prevent="submit"
-                >
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Kind -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Tipo</label>
-                            <select
-                                v-model="form.kind"
-                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                            >
-                                <option value="vehicle">
-                                    Veículo
-                                </option>
-                                <option value="trailer">
-                                    Reboque
-                                </option>
-                            </select>
-                            <p
-                                v-if="form.errors.kind"
-                                class="mt-1 text-xs text-red-600"
-                            >
-                                {{ form.errors.kind }}
-                            </p>
-                        </div>
+        <div class="mx-auto max-w-2xl">
+            <form class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200" @submit.prevent="submit">
 
-                        <!-- Vehicle Type -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Categoria</label>
-                            <select
-                                v-model="form.vehicle_type_id"
-                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                            >
-                                <option value="">
-                                    Selecione...
-                                </option>
-                                <option
-                                    v-for="t in filteredTypes"
-                                    :key="t.id"
-                                    :value="t.id"
-                                >
-                                    {{ t.label }}
-                                </option>
-                            </select>
-                            <p
-                                v-if="form.errors.vehicle_type_id"
-                                class="mt-1 text-xs text-red-600"
-                            >
-                                {{ form.errors.vehicle_type_id }}
-                            </p>
-                        </div>
+                <div class="px-6 py-5 border-b border-gray-100">
+                    <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Identificação</h2>
+                </div>
 
-                        <!-- License Plate -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Placa</label>
-                            <input
-                                v-model="form.license_plate"
-                                type="text"
-                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                            />
-                            <p
-                                v-if="form.errors.license_plate"
-                                class="mt-1 text-xs text-red-600"
-                            >
-                                {{ form.errors.license_plate }}
-                            </p>
-                        </div>
+                <div class="px-6 py-5 grid grid-cols-2 gap-5">
 
-                        <!-- RENAVAM -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">RENAVAM</label>
-                            <input
-                                v-model="form.renavam"
-                                type="text"
-                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                            />
-                            <p
-                                v-if="form.errors.renavam"
-                                class="mt-1 text-xs text-red-600"
-                            >
-                                {{ form.errors.renavam }}
-                            </p>
-                        </div>
-
-                        <!-- Brand -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Marca</label>
-                            <input
-                                v-model="form.brand"
-                                type="text"
-                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                            />
-                            <p
-                                v-if="form.errors.brand"
-                                class="mt-1 text-xs text-red-600"
-                            >
-                                {{ form.errors.brand }}
-                            </p>
-                        </div>
-
-                        <!-- Model -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Modelo</label>
-                            <input
-                                v-model="form.model"
-                                type="text"
-                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                            />
-                            <p
-                                v-if="form.errors.model"
-                                class="mt-1 text-xs text-red-600"
-                            >
-                                {{ form.errors.model }}
-                            </p>
-                        </div>
-
-                        <!-- Year -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Ano</label>
-                            <input
-                                v-model="form.year"
-                                type="number"
-                                min="1980"
-                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                            />
-                            <p
-                                v-if="form.errors.year"
-                                class="mt-1 text-xs text-red-600"
-                            >
-                                {{ form.errors.year }}
-                            </p>
-                        </div>
-
-                        <!-- Active -->
-                        <div class="flex items-center gap-2 pt-6">
-                            <input
-                                id="active"
-                                v-model="form.active"
-                                type="checkbox"
-                                class="rounded border-gray-300 text-indigo-600"
-                            />
-                            <label
-                                for="active"
-                                class="text-sm font-medium text-gray-700"
-                            >Ativo</label>
-                        </div>
-                    </div>
-
-                    <!-- Notes -->
+                    <!-- Kind -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Observações</label>
-                        <textarea
-                            v-model="form.notes"
-                            rows="3"
-                            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm"
-                        />
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipo</label>
+                        <select v-model="form.kind" class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <option value="vehicle">Veículo</option>
+                            <option value="trailer">Reboque</option>
+                        </select>
+                        <p v-if="form.errors.kind" class="mt-1.5 text-xs text-red-600">{{ form.errors.kind }}</p>
                     </div>
 
-                    <div class="flex justify-end gap-3">
-                        <a
-                            href="/vehicles"
-                            class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        >
-                            Cancelar
-                        </a>
-                        <button
-                            type="submit"
-                            :disabled="form.processing"
-                            class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
-                        >
-                            {{ isEdit ? 'Salvar' : 'Criar Veículo' }}
-                        </button>
+                    <!-- Vehicle Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Categoria</label>
+                        <select v-model="form.vehicle_type_id" class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <option value="">Selecione...</option>
+                            <option v-for="t in filteredTypes" :key="t.id" :value="t.id">{{ t.label }}</option>
+                        </select>
+                        <p v-if="form.errors.vehicle_type_id" class="mt-1.5 text-xs text-red-600">{{ form.errors.vehicle_type_id }}</p>
                     </div>
-                </form>
-            </div>
+
+                    <!-- License Plate -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Placa</label>
+                        <input
+                            v-model="form.license_plate"
+                            v-maska="{ mask: ['AAA-####', 'AAA#A##'], tokens: { A: { pattern: /[A-Za-z]/, uppercase: true }, '#': { pattern: /[0-9]/ } } }"
+                            type="text"
+                            placeholder="ABC-1234"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-mono tracking-wider shadow-sm uppercase focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.license_plate" class="mt-1.5 text-xs text-red-600">{{ form.errors.license_plate }}</p>
+                    </div>
+
+                    <!-- RENAVAM -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">RENAVAM</label>
+                        <input
+                            v-model="form.renavam"
+                            v-maska="'##########-#'"
+                            type="text"
+                            placeholder="0000000000-0"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-mono tracking-wide shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.renavam" class="mt-1.5 text-xs text-red-600">{{ form.errors.renavam }}</p>
+                    </div>
+
+                    <!-- Brand -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Marca</label>
+                        <input
+                            v-model="form.brand"
+                            type="text"
+                            placeholder="Volvo, Scania..."
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.brand" class="mt-1.5 text-xs text-red-600">{{ form.errors.brand }}</p>
+                    </div>
+
+                    <!-- Model -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Modelo</label>
+                        <input
+                            v-model="form.model"
+                            type="text"
+                            placeholder="FH 540, R 450..."
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.model" class="mt-1.5 text-xs text-red-600">{{ form.errors.model }}</p>
+                    </div>
+
+                    <!-- Year -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Ano</label>
+                        <input
+                            v-model="form.year"
+                            type="number"
+                            min="1980"
+                            :max="new Date().getFullYear() + 1"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.year" class="mt-1.5 text-xs text-red-600">{{ form.errors.year }}</p>
+                    </div>
+
+                    <!-- Active -->
+                    <div class="flex items-center gap-2.5 pt-7">
+                        <input id="active" v-model="form.active" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                        <label for="active" class="text-sm font-medium text-gray-700">Veículo ativo</label>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="px-6 pb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Observações</label>
+                    <textarea
+                        v-model="form.notes"
+                        rows="3"
+                        placeholder="Informações adicionais..."
+                        class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    />
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center justify-end gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4">
+                    <Link
+                        href="/vehicles"
+                        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
+                    >
+                        Cancelar
+                    </Link>
+                    <button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 transition-colors"
+                    >
+                        {{ isEdit ? 'Salvar alterações' : 'Criar veículo' }}
+                    </button>
+                </div>
+            </form>
         </div>
     </AuthenticatedLayout>
 </template>
