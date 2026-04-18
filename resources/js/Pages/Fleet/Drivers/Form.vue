@@ -29,12 +29,16 @@ export default {
 
     methods: {
         submit() {
+            this.form.cpf = this.cleanCPF(this.form.cpf)
             if (this.isEdit) {
                 this.form.put(`/drivers/${this.driver.id}`)
             } else {
                 this.form.post('/drivers')
             }
         },
+        cleanCPF(value) {
+            return (value || '').replace(/\D/g, '')
+        }
     },
 }
 </script>
