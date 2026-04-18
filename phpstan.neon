@@ -9,7 +9,4 @@ parameters:
         - database/seeders
     excludePaths:
         - app/Providers/Telescope*
-    ignoreErrors:
-        -
-            identifier: trait.unused
-            path: app/Modules/Tenancy/Traits/BelongsToCompany.php
+    ignoreErrors: []

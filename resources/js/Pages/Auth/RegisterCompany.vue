@@ -1,13 +1,12 @@
 <script>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { vMaska } from 'maska/vue';
 
 export default {
-    components: { GuestLayout, InputError, InputLabel, PrimaryButton, TextInput, Head, Link },
+    components: { GuestLayout, Head, Link },
+    directives: { maska: vMaska },
+
     data() {
         return {
             form: useForm({
@@ -20,6 +19,7 @@ export default {
             }),
         };
     },
+
     methods: {
         submit() {
             this.form.post(route('register'), {
@@ -32,137 +32,104 @@ export default {
 
 <template>
     <GuestLayout>
-        <Head title="Register your company" />
+        <Head title="Criar conta" />
 
-        <form @submit.prevent="submit">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Criar sua conta</h2>
+            <p class="mt-1 text-sm text-gray-500">Preencha os dados da empresa para começar.</p>
+        </div>
+
+        <form class="space-y-5" @submit.prevent="submit">
+
             <div>
-                <InputLabel
-                    for="company_name"
-                    value="Company name"
-                />
-                <TextInput
-                    id="company_name"
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nome da empresa</label>
+                <input
                     v-model="form.company_name"
                     type="text"
-                    class="mt-1 block w-full"
-                    required
+                    placeholder="Transportadora Exemplo Ltda"
                     autofocus
+                    class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.company_name"
-                />
+                <p v-if="form.errors.company_name" class="mt-1.5 text-xs text-red-600">{{ form.errors.company_name }}</p>
             </div>
 
-            <div class="mt-4">
-                <InputLabel
-                    for="cnpj"
-                    value="CNPJ (14 digits)"
-                />
-                <TextInput
-                    id="cnpj"
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">CNPJ</label>
+                <input
                     v-model="form.cnpj"
+                    v-maska="'##.###.###/####-##'"
                     type="text"
-                    class="mt-1 block w-full"
-                    required
-                    maxlength="14"
+                    placeholder="00.000.000/0000-00"
+                    class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-mono tracking-wide shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.cnpj"
-                />
+                <p v-if="form.errors.cnpj" class="mt-1.5 text-xs text-red-600">{{ form.errors.cnpj }}</p>
             </div>
 
-            <div class="mt-4">
-                <InputLabel
-                    for="name"
-                    value="Your name"
-                />
-                <TextInput
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="name"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.name"
-                />
+            <div class="border-t border-gray-100 pt-5">
+                <p class="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-400">Dados do responsável</p>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Seu nome</label>
+                        <input
+                            v-model="form.name"
+                            type="text"
+                            placeholder="Nome completo"
+                            autocomplete="name"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.name" class="mt-1.5 text-xs text-red-600">{{ form.errors.name }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">E-mail</label>
+                        <input
+                            v-model="form.email"
+                            type="email"
+                            placeholder="voce@empresa.com.br"
+                            autocomplete="username"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.email" class="mt-1.5 text-xs text-red-600">{{ form.errors.email }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Senha</label>
+                        <input
+                            v-model="form.password"
+                            type="password"
+                            autocomplete="new-password"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p v-if="form.errors.password" class="mt-1.5 text-xs text-red-600">{{ form.errors.password }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar senha</label>
+                        <input
+                            v-model="form.password_confirmation"
+                            type="password"
+                            autocomplete="new-password"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                    </div>
+                </div>
             </div>
 
-            <div class="mt-4">
-                <InputLabel
-                    for="email"
-                    value="Email"
-                />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="username"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.email"
-                />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel
-                    for="password"
-                    value="Password"
-                />
-                <TextInput
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password"
-                />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
+            <div class="flex items-center justify-between pt-2">
                 <Link
                     :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline"
                 >
-                    Already registered?
+                    Já tem conta?
                 </Link>
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
+                <button
+                    type="submit"
                     :disabled="form.processing"
+                    class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 transition-colors"
                 >
-                    Register
-                </PrimaryButton>
+                    Criar conta
+                </button>
             </div>
         </form>
     </GuestLayout>

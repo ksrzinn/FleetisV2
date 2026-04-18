@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fc28d6cfd3b5936ce511c5f69eb50615",
+    "content-hash": "45021ba5bdd4f54ebf05e725c365f1d2",
     "packages": [
         {
             "name": "brick/math",
@@ -626,6 +626,67 @@
                 }
             ],
             "time": "2025-12-03T09:33:47+00:00"
+        },
+        {
+            "name": "geekcom/validator-docs",
+            "version": "3.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/geekcom/validator-docs.git",
+                "reference": "6ce06bfdcdd597cf4f392b4ba3499676e198f594"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/geekcom/validator-docs/zipball/6ce06bfdcdd597cf4f392b4ba3499676e198f594",
+                "reference": "6ce06bfdcdd597cf4f392b4ba3499676e198f594",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0",
+                "thiagocfn/inscricaoestadual": "^1.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0",
+                "php-coveralls/php-coveralls": "^2.5",
+                "phpstan/phpstan": "^1.4",
+                "phpunit/phpunit": "^8.4|^9.4",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "geekcom\\ValidatorDocs\\ValidatorProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "geekcom\\ValidatorDocs\\": "src/validator-docs"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Rodrigues Lima",
+                    "email": "geekcom@php.net"
+                }
+            ],
+            "description": "Biblioteca PHP para validação de documentos do Brasil usando Laravel",
+            "support": {
+                "issues": "https://github.com/geekcom/validator-docs/issues",
+                "source": "https://github.com/geekcom/validator-docs/tree/3.12.0"
+            },
+            "funding": [
+                {
+                    "url": "https://nubank.com.br/pagar/518o5/zVBzxd00Sb",
+                    "type": "custom"
+                }
+            ],
+            "time": "2026-03-07T19:59:03+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -6492,6 +6553,119 @@
                 }
             ],
             "time": "2026-03-30T13:44:50+00:00"
+        },
+        {
+            "name": "thiagocfn/inscricaoestadual",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Thiagocfn/InscricaoEstadual.git",
+                "reference": "414a43f152b9ff39b9cabd33c9bdf34a2018df1b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Thiagocfn/InscricaoEstadual/zipball/414a43f152b9ff39b9cabd33c9bdf34a2018df1b",
+                "reference": "414a43f152b9ff39b9cabd33c9bdf34a2018df1b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.16"
+            },
+            "require-dev": {
+                "codacy/coverage": "dev-master",
+                "phpunit/phpunit": "^5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Thiagocfn\\InscricaoEstadual\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thiago Souza",
+                    "email": "thiagocfn@msn.com"
+                }
+            ],
+            "description": "Biblioteca em PHP para validação de todas as Inscrições Estaduais de todo o Brasil, seguindo as regras da SEFAZ. http://www.sintegra.gov.br/insc_est.html",
+            "homepage": "https://github.com/thiagocfn/inscricaoestadual",
+            "support": {
+                "issues": "https://github.com/Thiagocfn/InscricaoEstadual/issues",
+                "source": "https://github.com/Thiagocfn/InscricaoEstadual/tree/1.1.2"
+            },
+            "time": "2021-03-12T00:57:51+00:00"
+        },
+        {
+            "name": "tightenco/parental",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tighten/parental.git",
+                "reference": "a1eae70ba58df3e8bbdb3c6e2a9b2bccd55a53c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tighten/parental/zipball/a1eae70ba58df3e8bbdb3c6e2a9b2bccd55a53c3",
+                "reference": "a1eae70ba58df3e8bbdb3c6e2a9b2bccd55a53c3",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.0||^11.0||^12.0||^13.0",
+                "illuminate/events": "^10.0||^11.0||^12.0||^13.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0||^9.0||^10.0||^11.0",
+                "phpunit/phpunit": "^10.5||^11.5.3||^12.5.12",
+                "tightenco/duster": "^3.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "\\Parental\\Providers\\ParentalServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Parental\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caleb Porzio",
+                    "email": "calebporzio@gmail.com",
+                    "homepage": "https://calebporzio.com/",
+                    "role": "author"
+                },
+                {
+                    "name": "Steve McDougall",
+                    "email": "juststevemcd@gmail.com",
+                    "homepage": "https://www.juststeveking.uk/",
+                    "role": "developer"
+                }
+            ],
+            "description": "A simple eloquent trait that allows relationships to be accessed through child models.",
+            "support": {
+                "issues": "https://github.com/tighten/parental/issues",
+                "source": "https://github.com/tighten/parental/tree/1.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/calebporzio",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-03T17:37:47+00:00"
         },
         {
             "name": "tightenco/ziggy",
