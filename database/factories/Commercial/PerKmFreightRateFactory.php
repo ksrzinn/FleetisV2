@@ -11,7 +11,7 @@ class PerKmFreightRateFactory extends Factory
 {
     protected $model = PerKmFreightRate::class;
 
-    private static array $states = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'GO'];
+    private static array $brazilianStates = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'GO'];
 
     private static int $stateIndex = 0;
 
@@ -23,7 +23,7 @@ class PerKmFreightRateFactory extends Factory
         return [
             'company_id' => $client->company_id,
             'client_id' => $client->id,
-            'state' => self::$states[self::$stateIndex++ % count(self::$states)],
+            'state' => self::$brazilianStates[self::$stateIndex++ % count(self::$brazilianStates)],
             'rate_per_km' => fake()->randomFloat(4, 1, 10),
         ];
     }
