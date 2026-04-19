@@ -6,12 +6,14 @@ use App\Modules\Commercial\Models\Client;
 use App\Modules\Commercial\Models\ClientFreightTable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<ClientFreightTable> */
 class ClientFreightTableFactory extends Factory
 {
     protected $model = ClientFreightTable::class;
 
     public function definition(): array
     {
+        // Must eagerly create Client so company_id and client_id can be correlated.
         $client = Client::factory()->create();
 
         return [

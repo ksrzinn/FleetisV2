@@ -6,6 +6,7 @@ use App\Modules\Commercial\Models\Client;
 use App\Modules\Tenancy\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<Client> */
 class ClientFactory extends Factory
 {
     protected $model = Client::class;

@@ -6,12 +6,14 @@ use App\Modules\Commercial\Models\ClientFreightTable;
 use App\Modules\Commercial\Models\FixedFreightRate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<FixedFreightRate> */
 class FixedFreightRateFactory extends Factory
 {
     protected $model = FixedFreightRate::class;
 
     public function definition(): array
     {
+        // Must eagerly create ClientFreightTable so company_id can be derived from parent.
         $table = ClientFreightTable::factory()->create();
 
         return [

@@ -6,6 +6,7 @@ use App\Modules\Commercial\Models\Client;
 use App\Modules\Commercial\Models\PerKmFreightRate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<PerKmFreightRate> */
 class PerKmFreightRateFactory extends Factory
 {
     protected $model = PerKmFreightRate::class;
@@ -16,6 +17,7 @@ class PerKmFreightRateFactory extends Factory
 
     public function definition(): array
     {
+        // Must eagerly create Client so company_id and client_id can be correlated.
         $client = Client::factory()->create();
 
         return [
