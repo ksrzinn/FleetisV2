@@ -44,6 +44,13 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client created.');
     }
 
+    public function show(Client $client): Response
+    {
+        $this->authorize('view', $client);
+        $client->load(['freightTables', 'perKmRates']);
+        return Inertia::render('Commercial/Clients/Show', ['client' => $client]);
+    }
+
     public function edit(Client $client): Response
     {
         $this->authorize('update', $client);

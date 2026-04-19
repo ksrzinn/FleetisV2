@@ -13,6 +13,11 @@ class PerKmFreightRatePolicy extends TenantPolicy
         return $user->can('freight_tables.view');
     }
 
+    public function view(User $user, PerKmFreightRate $r): bool
+    {
+        return $user->can('freight_tables.view') && $this->belongsToTenant($user, $r);
+    }
+
     public function create(User $user): bool
     {
         return $user->can('freight_tables.manage');

@@ -8,9 +8,9 @@
     </div>
 
     <div class="mb-4 flex gap-2">
-      <input v-model="filters.search" type="text" placeholder="Search name or document..."
+      <input v-model="localFilters.search" type="text" placeholder="Search name or document..."
              class="border rounded px-3 py-2 w-64" @input="search" />
-      <select v-model="filters.active" class="border rounded px-3 py-2" @change="search">
+      <select v-model="localFilters.active" class="border rounded px-3 py-2" @change="search">
         <option value="">All</option>
         <option value="1">Active</option>
         <option value="0">Inactive</option>
@@ -55,12 +55,12 @@ export default {
   },
   data() {
     return {
-      filters: { search: this.filters?.search ?? '', active: this.filters?.active ?? '' },
+      localFilters: { search: this.filters?.search ?? '', active: this.filters?.active ?? '' },
     }
   },
   methods: {
     search() {
-      router.get(route('clients.index'), this.filters, { preserveState: true, replace: true })
+      router.get(route('clients.index'), this.localFilters, { preserveState: true, replace: true })
     },
     destroy(client) {
       if (confirm(`Delete ${client.name}?`)) {

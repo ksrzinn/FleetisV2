@@ -8,6 +8,6 @@ class CreatePerKmFreightRateAction
 {
     public function handle(Client $client, array $data): PerKmFreightRate
     {
-        return $client->perKmRates()->create($data);
+        return $client->perKmRates()->create(array_merge($data, ['company_id' => $client->company_id]));
     }
 }

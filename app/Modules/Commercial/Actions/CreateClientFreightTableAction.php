@@ -8,6 +8,6 @@ class CreateClientFreightTableAction
 {
     public function handle(Client $client, array $data): ClientFreightTable
     {
-        return $client->freightTables()->create($data);
+        return $client->freightTables()->create(array_merge($data, ['company_id' => $client->company_id]));
     }
 }
