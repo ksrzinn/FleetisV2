@@ -47,7 +47,7 @@ class ClientController extends Controller
     public function show(Client $client): Response
     {
         $this->authorize('view', $client);
-        $client->load(['freightTables', 'perKmRates']);
+        $client->load(['freightTables', 'perKmRates.prices.vehicleType']);
         return Inertia::render('Commercial/Clients/Show', ['client' => $client]);
     }
 

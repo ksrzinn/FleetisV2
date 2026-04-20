@@ -8,8 +8,17 @@ class CreateFixedFreightRateAction
 {
     public function handle(ClientFreightTable $table, array $data): FixedFreightRate
     {
-        return $table->fixedRates()->create(
+        $prices = $data['prices'];
+        unset($data['prices']);
+
+        $rate = $table->fixedRates()->create(
             array_merge($data, ['company_id' => $table->company_id])
         );
+
+        foreach ($prices as $priceData) {
+            $rate->prices()->create(array_merge($priceData, ['company_id' => $table->company_id]));
+        }
+
+        return $rate;
     }
 }

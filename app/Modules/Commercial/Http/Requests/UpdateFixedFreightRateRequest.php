@@ -12,16 +12,18 @@ class UpdateFixedFreightRateRequest extends FormRequest
     {
         $rate = $this->route('fixed_rate');
         return [
-            'name'      => [
+            'name'                      => [
                 'required', 'string', 'max:255',
                 Rule::unique('fixed_freight_rates', 'name')
                     ->where('client_freight_table_id', $rate->client_freight_table_id)
                     ->ignore($rate),
             ],
-            'price'     => ['required', 'numeric', 'min:0'],
-            'avg_km'    => ['nullable', 'numeric', 'min:0'],
-            'tolls'     => ['nullable', 'numeric', 'min:0'],
-            'fuel_cost' => ['nullable', 'numeric', 'min:0'],
+            'avg_km'                    => ['nullable', 'numeric', 'min:0'],
+            'prices'                    => ['required', 'array', 'min:1'],
+            'prices.*.vehicle_type_id'  => ['required', 'integer', 'exists:vehicle_types,id'],
+            'prices.*.price'            => ['required', 'numeric', 'min:0'],
+            'prices.*.tolls'            => ['nullable', 'numeric', 'min:0'],
+            'prices.*.fuel_cost'        => ['nullable', 'numeric', 'min:0'],
         ];
     }
 }

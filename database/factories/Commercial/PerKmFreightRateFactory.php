@@ -24,7 +24,6 @@ class PerKmFreightRateFactory extends Factory
             'company_id' => $client->company_id,
             'client_id' => $client->id,
             'state' => self::$brazilianStates[self::$stateIndex++ % count(self::$brazilianStates)],
-            'rate_per_km' => fake()->randomFloat(4, 1, 10),
         ];
     }
 }

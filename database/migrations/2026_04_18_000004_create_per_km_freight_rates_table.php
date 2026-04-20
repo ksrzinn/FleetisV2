@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
             $table->char('state', 2);
-            $table->decimal('rate_per_km', 10, 4);
             $table->timestamps();
             $table->unique(['company_id', 'client_id', 'state']);
         });

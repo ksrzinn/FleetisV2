@@ -59,38 +59,42 @@ export default {
                     Nova Taxa
                 </Link>
             </div>
-            <table class="min-w-full divide-y divide-gray-100">
-                <thead>
-                    <tr class="bg-gray-50">
-                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Nome</th>
-                        <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Preço (R$)</th>
-                        <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">KM Médio</th>
-                        <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Pedágio (R$)</th>
-                        <th class="px-6 py-3" />
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 bg-white">
-                    <tr v-for="rate in freightTable.fixed_rates" :key="rate.id" class="hover:bg-gray-50 transition-colors">
-                        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">{{ rate.name }}</td>
-                        <td class="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-700">{{ rate.price }}</td>
-                        <td class="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-600">{{ rate.avg_km ?? '—' }}</td>
-                        <td class="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-600">{{ rate.tolls ?? '—' }}</td>
-                        <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
-                            <Link
-                                :href="route('fixed-rates.edit', rate.id)"
-                                class="font-medium text-indigo-600 hover:text-indigo-800 mr-4 transition-colors"
-                            >Editar</Link>
-                            <button
-                                class="font-medium text-red-500 hover:text-red-700 transition-colors"
-                                @click="destroyRate(rate)"
-                            >Remover</button>
-                        </td>
-                    </tr>
-                    <tr v-if="!freightTable.fixed_rates?.length">
-                        <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-500">Nenhuma taxa cadastrada.</td>
-                    </tr>
-                </tbody>
-            </table>
+
+            <div v-if="!freightTable.fixed_rates?.length" class="px-6 py-10 text-center text-sm text-gray-500">
+                Nenhuma taxa cadastrada.
+            </div>
+
+            <div v-for="rate in freightTable.fixed_rates" :key="rate.id" class="border-b border-gray-100 last:border-0">
+                <div class="flex items-center justify-between px-6 py-3 bg-gray-50">
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium text-gray-900">{{ rate.name }}</span>
+                        <span v-if="rate.avg_km" class="text-xs text-gray-500">{{ rate.avg_km }} km</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <Link :href="route('fixed-rates.edit', rate.id)" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition-colors">Editar</Link>
+                        <button class="text-xs font-medium text-red-500 hover:text-red-700 transition-colors" @click="destroyRate(rate)">Remover</button>
+                    </div>
+                </div>
+                <table v-if="rate.prices?.length" class="min-w-full divide-y divide-gray-100">
+                    <thead>
+                        <tr class="bg-white">
+                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-400">Tipo de Veículo</th>
+                            <th class="px-6 py-2 text-right text-xs font-medium text-gray-400">Preço (R$)</th>
+                            <th class="px-6 py-2 text-right text-xs font-medium text-gray-400">Pedágio (R$)</th>
+                            <th class="px-6 py-2 text-right text-xs font-medium text-gray-400">Combustível (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 bg-white">
+                        <tr v-for="price in rate.prices" :key="price.id">
+                            <td class="whitespace-nowrap px-6 py-2 text-sm text-gray-700">{{ price.vehicle_type?.label }}</td>
+                            <td class="whitespace-nowrap px-6 py-2 text-right text-sm text-gray-700">{{ price.price }}</td>
+                            <td class="whitespace-nowrap px-6 py-2 text-right text-sm text-gray-500">{{ price.tolls ?? '—' }}</td>
+                            <td class="whitespace-nowrap px-6 py-2 text-right text-sm text-gray-500">{{ price.fuel_cost ?? '—' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p v-else class="px-6 py-3 text-xs text-gray-400 italic">Nenhum preço por tipo de veículo cadastrado.</p>
+            </div>
         </div>
 
         <div v-else class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 p-6">

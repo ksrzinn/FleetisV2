@@ -7,6 +7,7 @@ use Database\Factories\Commercial\PerKmFreightRateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PerKmFreightRate extends Model
 {
@@ -18,12 +19,15 @@ class PerKmFreightRate extends Model
         return PerKmFreightRateFactory::new();
     }
 
-    protected $fillable = ['company_id', 'client_id', 'state', 'rate_per_km'];
-
-    protected $casts = ['rate_per_km' => 'decimal:4'];
+    protected $fillable = ['company_id', 'client_id', 'state'];
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function prices(): HasMany
+    {
+        return $this->hasMany(PerKmFreightRatePrice::class);
     }
 }

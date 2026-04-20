@@ -30,7 +30,7 @@ class ClientFreightTableController extends Controller
     public function show(ClientFreightTable $freightTable): Response
     {
         $this->authorize('view', $freightTable);
-        $freightTable->load(['client', 'fixedRates']);
+        $freightTable->load(['client', 'fixedRates.prices.vehicleType']);
         return Inertia::render('Commercial/FreightTables/Show', ['freightTable' => $freightTable]);
     }
 

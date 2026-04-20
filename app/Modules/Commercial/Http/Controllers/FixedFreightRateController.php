@@ -8,6 +8,7 @@ use App\Modules\Commercial\Http\Requests\StoreFixedFreightRateRequest;
 use App\Modules\Commercial\Http\Requests\UpdateFixedFreightRateRequest;
 use App\Modules\Commercial\Models\ClientFreightTable;
 use App\Modules\Commercial\Models\FixedFreightRate;
+use App\Modules\Fleet\Models\VehicleType;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +18,10 @@ class FixedFreightRateController extends Controller
     public function create(ClientFreightTable $freightTable): Response
     {
         $this->authorize('create', FixedFreightRate::class);
-        return Inertia::render('Commercial/FixedRates/Create', ['freightTable' => $freightTable]);
+        return Inertia::render('Commercial/FixedRates/Create', [
+            'freightTable' => $freightTable,
+            'vehicleTypes' => VehicleType::orderBy('label')->get(['id', 'label']),
+        ]);
     }
 
     public function store(StoreFixedFreightRateRequest $request, ClientFreightTable $freightTable, CreateFixedFreightRateAction $action): RedirectResponse
@@ -30,7 +34,10 @@ class FixedFreightRateController extends Controller
     public function edit(FixedFreightRate $fixedRate): Response
     {
         $this->authorize('update', $fixedRate);
-        return Inertia::render('Commercial/FixedRates/Edit', ['rate' => $fixedRate->load('freightTable')]);
+        return Inertia::render('Commercial/FixedRates/Edit', [
+            'rate' => $fixedRate->load(['freightTable', 'prices.vehicleType']),
+            'vehicleTypes' => VehicleType::orderBy('label')->get(['id', 'label']),
+        ]);
     }
 
     public function update(UpdateFixedFreightRateRequest $request, FixedFreightRate $fixedRate, UpdateFixedFreightRateAction $action): RedirectResponse

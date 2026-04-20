@@ -4,6 +4,7 @@ namespace Tests\Feature\Commercial;
 use App\Models\User;
 use App\Modules\Commercial\Models\Client;
 use App\Modules\Commercial\Models\PerKmFreightRate;
+use App\Modules\Fleet\Models\VehicleType;
 use App\Modules\Identity\Actions\SeedCompanyRolesAction;
 use App\Modules\Tenancy\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,11 +37,14 @@ class PerKmFreightRateCrudTest extends TenantTestCase
     {
         $user = $this->makeUser('Operator');
         $client = $this->makeClient($user);
+        $vt = VehicleType::factory()->create();
 
         $this->actingAsTenant($user)
             ->post(route('clients.per-km-rates.store', $client), [
                 'state' => 'SP',
-                'rate_per_km' => '3.5000',
+                'prices' => [
+                    ['vehicle_type_id' => $vt->id, 'rate_per_km' => '3.5000'],
+                ],
             ])
             ->assertRedirect();
 
@@ -48,17 +52,24 @@ class PerKmFreightRateCrudTest extends TenantTestCase
             'client_id' => $client->id,
             'state' => 'SP',
         ]);
+        $this->assertDatabaseHas('per_km_freight_rate_prices', [
+            'vehicle_type_id' => $vt->id,
+            'rate_per_km' => '3.5000',
+        ]);
     }
 
     public function test_invalid_state_is_rejected(): void
     {
         $user = $this->makeUser('Admin');
         $client = $this->makeClient($user);
+        $vt = VehicleType::factory()->create();
 
         $this->actingAsTenant($user)
             ->post(route('clients.per-km-rates.store', $client), [
                 'state' => 'XX',
-                'rate_per_km' => '3.00',
+                'prices' => [
+                    ['vehicle_type_id' => $vt->id, 'rate_per_km' => '3.00'],
+                ],
             ])
             ->assertSessionHasErrors('state');
     }
@@ -67,6 +78,7 @@ class PerKmFreightRateCrudTest extends TenantTestCase
     {
         $user = $this->makeUser('Admin');
         $client = $this->makeClient($user);
+        $vt = VehicleType::factory()->create();
         PerKmFreightRate::factory()->create([
             'company_id' => $user->company_id,
             'client_id' => $client->id,
@@ -76,7 +88,9 @@ class PerKmFreightRateCrudTest extends TenantTestCase
         $this->actingAsTenant($user)
             ->post(route('clients.per-km-rates.store', $client), [
                 'state' => 'SP',
-                'rate_per_km' => '5.00',
+                'prices' => [
+                    ['vehicle_type_id' => $vt->id, 'rate_per_km' => '5.00'],
+                ],
             ])
             ->assertSessionHasErrors('state');
     }
@@ -85,11 +99,14 @@ class PerKmFreightRateCrudTest extends TenantTestCase
     {
         $user = $this->makeUser('Financial');
         $client = $this->makeClient($user);
+        $vt = VehicleType::factory()->create();
 
         $this->actingAsTenant($user)
             ->post(route('clients.per-km-rates.store', $client), [
                 'state' => 'SP',
-                'rate_per_km' => '3.00',
+                'prices' => [
+                    ['vehicle_type_id' => $vt->id, 'rate_per_km' => '3.00'],
+                ],
             ])
             ->assertForbidden();
     }

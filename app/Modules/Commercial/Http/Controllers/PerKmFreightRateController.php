@@ -8,6 +8,7 @@ use App\Modules\Commercial\Http\Requests\StorePerKmFreightRateRequest;
 use App\Modules\Commercial\Http\Requests\UpdatePerKmFreightRateRequest;
 use App\Modules\Commercial\Models\Client;
 use App\Modules\Commercial\Models\PerKmFreightRate;
+use App\Modules\Fleet\Models\VehicleType;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +18,10 @@ class PerKmFreightRateController extends Controller
     public function create(Client $client): Response
     {
         $this->authorize('create', PerKmFreightRate::class);
-        return Inertia::render('Commercial/PerKmRates/Create', ['client' => $client]);
+        return Inertia::render('Commercial/PerKmRates/Create', [
+            'client' => $client,
+            'vehicleTypes' => VehicleType::orderBy('label')->get(['id', 'label']),
+        ]);
     }
 
     public function store(StorePerKmFreightRateRequest $request, Client $client, CreatePerKmFreightRateAction $action): RedirectResponse
@@ -30,7 +34,10 @@ class PerKmFreightRateController extends Controller
     public function edit(PerKmFreightRate $perKmRate): Response
     {
         $this->authorize('update', $perKmRate);
-        return Inertia::render('Commercial/PerKmRates/Edit', ['rate' => $perKmRate->load('client')]);
+        return Inertia::render('Commercial/PerKmRates/Edit', [
+            'rate' => $perKmRate->load(['client', 'prices.vehicleType']),
+            'vehicleTypes' => VehicleType::orderBy('label')->get(['id', 'label']),
+        ]);
     }
 
     public function update(UpdatePerKmFreightRateRequest $request, PerKmFreightRate $perKmRate, UpdatePerKmFreightRateAction $action): RedirectResponse

@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     private array $tables = [
-        'clients',
-        'client_freight_tables',
-        'fixed_freight_rates',
         'fixed_freight_rate_prices',
-        'per_km_freight_rates',
         'per_km_freight_rate_prices',
     ];
 

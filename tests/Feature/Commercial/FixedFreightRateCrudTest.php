@@ -4,6 +4,7 @@ namespace Tests\Feature\Commercial;
 use App\Models\User;
 use App\Modules\Commercial\Models\ClientFreightTable;
 use App\Modules\Commercial\Models\FixedFreightRate;
+use App\Modules\Fleet\Models\VehicleType;
 use App\Modules\Identity\Actions\SeedCompanyRolesAction;
 use App\Modules\Tenancy\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,11 +29,14 @@ class FixedFreightRateCrudTest extends TenantTestCase
     {
         $user = $this->makeUser('Operator');
         $table = ClientFreightTable::factory()->create(['company_id' => $user->company_id]);
+        $vt = VehicleType::factory()->create();
 
         $this->actingAsTenant($user)
             ->post(route('freight-tables.fixed-rates.store', $table), [
                 'name' => 'Sorocaba 3',
-                'price' => '1500.00',
+                'prices' => [
+                    ['vehicle_type_id' => $vt->id, 'price' => '1500.00', 'tolls' => null, 'fuel_cost' => null],
+                ],
             ])
             ->assertRedirect();
 
@@ -40,17 +44,24 @@ class FixedFreightRateCrudTest extends TenantTestCase
             'client_freight_table_id' => $table->id,
             'name' => 'Sorocaba 3',
         ]);
+        $this->assertDatabaseHas('fixed_freight_rate_prices', [
+            'vehicle_type_id' => $vt->id,
+            'price' => '1500.00',
+        ]);
     }
 
     public function test_financial_cannot_create_fixed_rate(): void
     {
         $user = $this->makeUser('Financial');
         $table = ClientFreightTable::factory()->create(['company_id' => $user->company_id]);
+        $vt = VehicleType::factory()->create();
 
         $this->actingAsTenant($user)
             ->post(route('freight-tables.fixed-rates.store', $table), [
                 'name' => 'Rate X',
-                'price' => '100',
+                'prices' => [
+                    ['vehicle_type_id' => $vt->id, 'price' => '100'],
+                ],
             ])
             ->assertForbidden();
     }
@@ -59,6 +70,7 @@ class FixedFreightRateCrudTest extends TenantTestCase
     {
         $user = $this->makeUser('Admin');
         $table = ClientFreightTable::factory()->create(['company_id' => $user->company_id]);
+        $vt = VehicleType::factory()->create();
         FixedFreightRate::factory()->create([
             'company_id' => $user->company_id,
             'client_freight_table_id' => $table->id,
@@ -68,7 +80,9 @@ class FixedFreightRateCrudTest extends TenantTestCase
         $this->actingAsTenant($user)
             ->post(route('freight-tables.fixed-rates.store', $table), [
                 'name' => 'Sorocaba 3',
-                'price' => '200',
+                'prices' => [
+                    ['vehicle_type_id' => $vt->id, 'price' => '200'],
+                ],
             ])
             ->assertSessionHasErrors('name');
     }

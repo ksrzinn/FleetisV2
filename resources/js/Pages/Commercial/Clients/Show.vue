@@ -156,34 +156,34 @@ export default {
                     Nova Taxa
                 </Link>
             </div>
-            <table class="min-w-full divide-y divide-gray-100">
-                <thead>
-                    <tr class="bg-gray-50">
-                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">UF</th>
-                        <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Taxa / KM (R$)</th>
-                        <th class="px-6 py-3" />
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 bg-white">
-                    <tr v-for="rate in client.per_km_rates" :key="rate.id" class="hover:bg-gray-50 transition-colors">
-                        <td class="whitespace-nowrap px-6 py-4 text-sm font-mono font-semibold text-gray-900">{{ rate.state }}</td>
-                        <td class="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-700">{{ rate.rate_per_km }}</td>
-                        <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
-                            <Link
-                                :href="route('per-km-rates.edit', rate.id)"
-                                class="font-medium text-indigo-600 hover:text-indigo-800 mr-4 transition-colors"
-                            >Editar</Link>
-                            <button
-                                class="font-medium text-red-500 hover:text-red-700 transition-colors"
-                                @click="destroyRate(rate)"
-                            >Remover</button>
-                        </td>
-                    </tr>
-                    <tr v-if="!client.per_km_rates?.length">
-                        <td colspan="3" class="px-6 py-10 text-center text-sm text-gray-500">Nenhuma taxa por KM cadastrada.</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div v-if="!client.per_km_rates?.length" class="px-6 py-10 text-center text-sm text-gray-500">
+                Nenhuma taxa por KM cadastrada.
+            </div>
+
+            <div v-for="rate in client.per_km_rates" :key="rate.id" class="border-b border-gray-100 last:border-0">
+                <div class="flex items-center justify-between px-6 py-3 bg-gray-50">
+                    <span class="text-sm font-mono font-semibold text-gray-900">{{ rate.state }}</span>
+                    <div class="flex items-center gap-4">
+                        <Link :href="route('per-km-rates.edit', rate.id)" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition-colors">Editar</Link>
+                        <button class="text-xs font-medium text-red-500 hover:text-red-700 transition-colors" @click="destroyRate(rate)">Remover</button>
+                    </div>
+                </div>
+                <table v-if="rate.prices?.length" class="min-w-full divide-y divide-gray-100">
+                    <thead>
+                        <tr class="bg-white">
+                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-400">Tipo de Veículo</th>
+                            <th class="px-6 py-2 text-right text-xs font-medium text-gray-400">Taxa / KM (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 bg-white">
+                        <tr v-for="price in rate.prices" :key="price.id">
+                            <td class="whitespace-nowrap px-6 py-2 text-sm text-gray-700">{{ price.vehicle_type?.label }}</td>
+                            <td class="whitespace-nowrap px-6 py-2 text-right text-sm text-gray-700">{{ price.rate_per_km }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p v-else class="px-6 py-3 text-xs text-gray-400 italic">Nenhum preço por tipo de veículo cadastrado.</p>
+            </div>
         </div>
     </AuthenticatedLayout>
 </template>

@@ -15,10 +15,7 @@ return new class extends Migration
                 ->constrained('client_freight_tables')
                 ->cascadeOnDelete();
             $table->string('name');
-            $table->decimal('price', 12, 2);
             $table->decimal('avg_km', 10, 2)->nullable();
-            $table->decimal('tolls', 12, 2)->nullable();
-            $table->decimal('fuel_cost', 12, 2)->nullable();
             $table->timestamps();
             $table->unique(['client_freight_table_id', 'name']);
         });

@@ -10,8 +10,9 @@ class UpdatePerKmFreightRateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rate_per_km' => ['required', 'numeric', 'min:0'],
-            // state intentionally excluded — immutable (it's the unique key)
+            'prices'                    => ['required', 'array', 'min:1'],
+            'prices.*.vehicle_type_id'  => ['required', 'integer', 'exists:vehicle_types,id'],
+            'prices.*.rate_per_km'      => ['required', 'numeric', 'min:0'],
         ];
     }
 }
