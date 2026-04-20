@@ -5,6 +5,9 @@ use App\Modules\Commercial\Http\Controllers\ClientController;
 use App\Modules\Commercial\Http\Controllers\ClientFreightTableController;
 use App\Modules\Commercial\Http\Controllers\FixedFreightRateController;
 use App\Modules\Commercial\Http\Controllers\PerKmFreightRateController;
+use App\Modules\Fleet\Http\Controllers\DriverCompensationController;
+use App\Modules\Fleet\Http\Controllers\DriverController;
+use App\Modules\Fleet\Http\Controllers\VehicleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,10 +25,16 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified', 'tenant'])->name('dashboard');
 
-Route::middleware(['auth', 'tenant'])->group(function () {
+Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('vehicles', VehicleController::class)->except('show');
+    Route::resource('drivers', DriverController::class)->except('show');
+    Route::resource('drivers.compensations', DriverCompensationController::class)
+        ->only(['index', 'store'])
+        ->shallow();
 
     Route::resource('clients', ClientController::class);
     Route::resource('clients.freight-tables', ClientFreightTableController::class)->shallow();

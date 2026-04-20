@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e3247bf9914d10ce1bcb29f606a33de",
+    "content-hash": "45021ba5bdd4f54ebf05e725c365f1d2",
     "packages": [
         {
             "name": "brick/math",
@@ -6598,6 +6598,74 @@
                 "source": "https://github.com/Thiagocfn/InscricaoEstadual/tree/1.1.2"
             },
             "time": "2021-03-12T00:57:51+00:00"
+        },
+        {
+            "name": "tightenco/parental",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tighten/parental.git",
+                "reference": "a1eae70ba58df3e8bbdb3c6e2a9b2bccd55a53c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tighten/parental/zipball/a1eae70ba58df3e8bbdb3c6e2a9b2bccd55a53c3",
+                "reference": "a1eae70ba58df3e8bbdb3c6e2a9b2bccd55a53c3",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.0||^11.0||^12.0||^13.0",
+                "illuminate/events": "^10.0||^11.0||^12.0||^13.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0||^9.0||^10.0||^11.0",
+                "phpunit/phpunit": "^10.5||^11.5.3||^12.5.12",
+                "tightenco/duster": "^3.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "\\Parental\\Providers\\ParentalServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Parental\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caleb Porzio",
+                    "email": "calebporzio@gmail.com",
+                    "homepage": "https://calebporzio.com/",
+                    "role": "author"
+                },
+                {
+                    "name": "Steve McDougall",
+                    "email": "juststevemcd@gmail.com",
+                    "homepage": "https://www.juststeveking.uk/",
+                    "role": "developer"
+                }
+            ],
+            "description": "A simple eloquent trait that allows relationships to be accessed through child models.",
+            "support": {
+                "issues": "https://github.com/tighten/parental/issues",
+                "source": "https://github.com/tighten/parental/tree/1.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/calebporzio",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-03T17:37:47+00:00"
         },
         {
             "name": "tightenco/ziggy",
