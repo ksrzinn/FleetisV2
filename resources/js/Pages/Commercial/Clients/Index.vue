@@ -39,7 +39,6 @@ export default {
             <div class="flex items-center justify-between">
                 <h1 class="text-xl font-semibold text-gray-900">Clientes</h1>
                 <Link
-                    v-if="$page.props.auth.user.can?.['clients.manage']"
                     :href="route('clients.create')"
                     class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 transition-colors"
                 >
@@ -107,12 +106,10 @@ export default {
                         <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                             <Link :href="route('clients.show', client.id)" class="font-medium text-indigo-600 hover:text-indigo-800 mr-4 transition-colors">Ver</Link>
                             <Link
-                                v-if="$page.props.auth.user.can?.['clients.manage']"
                                 :href="route('clients.edit', client.id)"
                                 class="font-medium text-indigo-600 hover:text-indigo-800 mr-4 transition-colors"
                             >Editar</Link>
                             <button
-                                v-if="$page.props.auth.user.can?.['clients.delete']"
                                 class="font-medium text-red-500 hover:text-red-700 transition-colors"
                                 @click="destroy(client)"
                             >Remover</button>

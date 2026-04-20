@@ -34,7 +34,6 @@ export default {
                     </div>
                 </div>
                 <Link
-                    v-if="$page.props.auth.user.can?.['freight_tables.manage']"
                     :href="route('freight-tables.edit', freightTable.id)"
                     class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
@@ -51,7 +50,6 @@ export default {
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                 <h2 class="text-sm font-semibold text-gray-700">Taxas Fixas</h2>
                 <Link
-                    v-if="$page.props.auth.user.can?.['freight_tables.manage']"
                     :href="route('freight-tables.fixed-rates.create', freightTable.id)"
                     class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors"
                 >
@@ -79,12 +77,10 @@ export default {
                         <td class="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-600">{{ rate.tolls ?? '—' }}</td>
                         <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                             <Link
-                                v-if="$page.props.auth.user.can?.['freight_tables.manage']"
                                 :href="route('fixed-rates.edit', rate.id)"
                                 class="font-medium text-indigo-600 hover:text-indigo-800 mr-4 transition-colors"
                             >Editar</Link>
                             <button
-                                v-if="$page.props.auth.user.can?.['freight_tables.manage']"
                                 class="font-medium text-red-500 hover:text-red-700 transition-colors"
                                 @click="destroyRate(rate)"
                             >Remover</button>
