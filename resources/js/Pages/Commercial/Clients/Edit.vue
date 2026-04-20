@@ -69,7 +69,7 @@ export default {
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">CPF / CNPJ *</label>
-                                    <input v-model="form.document" v-maska="['###.###.###-##', '##.###.###/####-##']" type="text" placeholder="CPF ou CNPJ" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                    <input v-model="form.document" v-maska data-maska="['###.###.###-##', '##.###.###/####-##']" type="text" placeholder="CPF ou CNPJ" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                                     <p v-if="form.errors.document" class="mt-1 text-xs text-red-600">{{ form.errors.document }}</p>
                                 </div>
                                 <div>
@@ -79,7 +79,7 @@ export default {
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Telefone</label>
-                                    <input v-model="form.phone" v-maska="['(##) ####-####', '(##) #####-####']" type="text" placeholder="(11) 99999-0000" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                    <input v-model="form.phone" v-maska data-maska="['(##) ####-####', '(##) #####-####']" type="text" placeholder="(11) 99999-0000" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <input v-model="form.active" type="checkbox" id="active" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
