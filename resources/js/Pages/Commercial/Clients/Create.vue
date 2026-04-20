@@ -22,6 +22,7 @@ export default {
         submit() {
             this.form.document = this.stripMask(this.form.document)
             this.form.phone = this.stripMask(this.form.phone)
+            console.log(this.form)
             this.form.post(route('clients.store'))
         },
         stripMask(value) {
