@@ -39,12 +39,16 @@ export default {
 
     methods: {
         submit() {
+            this.form.renavam = this.cleanData(this.form.renavam)
             if (this.isEdit) {
                 this.form.put(`/vehicles/${this.vehicle.id}`)
             } else {
                 this.form.post('/vehicles')
             }
         },
+        cleanData(value) {
+            return (value || '').replace(/\D/g, '')
+        }
     },
 }
 </script>

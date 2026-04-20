@@ -17,15 +17,23 @@ export default {
                 password: '',
                 password_confirmation: '',
             }),
+            inputedCnpj: '',
         };
     },
 
     methods: {
         submit() {
+            console.log(this.form)
+            this.form.cnpj = this.cleanCNPJ(this.inputedCnpj)
+            console.log(this.form)
             this.form.post(route('register'), {
                 onFinish: () => this.form.reset('password', 'password_confirmation'),
             });
         },
+        cleanCNPJ(value) {
+            return (value || '').replace(/\D/g, '')
+        }
+
     },
 };
 </script>
@@ -56,7 +64,7 @@ export default {
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">CNPJ</label>
                 <input
-                    v-model="form.cnpj"
+                    v-model="inputedCnpj"
                     v-maska="'##.###.###/####-##'"
                     type="text"
                     placeholder="00.000.000/0000-00"
