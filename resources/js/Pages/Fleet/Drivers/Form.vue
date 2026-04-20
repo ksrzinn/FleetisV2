@@ -29,14 +29,15 @@ export default {
 
     methods: {
         submit() {
-            this.form.cpf = this.cleanCPF(this.form.cpf)
+            this.form.cpf = this.stripMask(this.form.cpf)
+            this.form.phone = this.stripMask(this.form.phone)
             if (this.isEdit) {
                 this.form.put(`/drivers/${this.driver.id}`)
             } else {
                 this.form.post('/drivers')
             }
         },
-        cleanCPF(value) {
+        stripMask(value) {
             return (value || '').replace(/\D/g, '')
         }
     },
@@ -93,7 +94,8 @@ export default {
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Telefone</label>
                         <input
                             v-model="form.phone"
-                            v-maska="['(##) ####-####', '(##) #####-####']"
+                            v-maska
+                            data-maska="['(##) ####-####', '(##) #####-####']"
                             type="text"
                             placeholder="(11) 99999-0000"
                             class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-mono tracking-wide shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"

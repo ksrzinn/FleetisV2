@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Modules\Commercial\Http\Controllers\ClientController;
+use App\Modules\Commercial\Http\Controllers\ClientFreightTableController;
+use App\Modules\Commercial\Http\Controllers\FixedFreightRateController;
+use App\Modules\Commercial\Http\Controllers\PerKmFreightRateController;
 use App\Modules\Fleet\Http\Controllers\DriverCompensationController;
 use App\Modules\Fleet\Http\Controllers\DriverController;
 use App\Modules\Fleet\Http\Controllers\VehicleController;
@@ -31,6 +35,11 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::resource('drivers.compensations', DriverCompensationController::class)
         ->only(['index', 'store'])
         ->shallow();
+
+    Route::resource('clients', ClientController::class);
+    Route::resource('clients.freight-tables', ClientFreightTableController::class)->shallow();
+    Route::resource('freight-tables.fixed-rates', FixedFreightRateController::class)->shallow();
+    Route::resource('clients.per-km-rates', PerKmFreightRateController::class)->shallow();
 });
 
 require __DIR__.'/auth.php';
