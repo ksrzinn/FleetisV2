@@ -20,7 +20,12 @@ export default {
 
     methods: {
         submit() {
+            this.form.document = this.stripMask(this.form.document)
+            this.form.phone = this.stripMask(this.form.phone)
             this.form.post(route('clients.store'))
+        },
+        stripMask(value) {
+            return (value || '').replace(/\D/g, '')
         },
     },
 }
@@ -62,7 +67,7 @@ export default {
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Telefone</label>
-                                <input v-model="form.phone" type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                <input v-model="form.phone" v-maska="['(##) ####-####', '(##) #####-####']" type="text" placeholder="(11) 99999-0000" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                             </div>
                             <div class="flex items-center gap-2">
                                 <input v-model="form.active" type="checkbox" id="active" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />

@@ -29,14 +29,15 @@ export default {
 
     methods: {
         submit() {
-            this.form.cpf = this.cleanCPF(this.form.cpf)
+            this.form.cpf = this.stripMask(this.form.cpf)
+            this.form.phone = this.stripMask(this.form.phone)
             if (this.isEdit) {
                 this.form.put(`/drivers/${this.driver.id}`)
             } else {
                 this.form.post('/drivers')
             }
         },
-        cleanCPF(value) {
+        stripMask(value) {
             return (value || '').replace(/\D/g, '')
         }
     },
