@@ -97,7 +97,7 @@ All tenant tables: `id bigserial pk`, `company_id bigint not null FK`, composite
 - `per_km_freight_rates` — `client_id`, `state` char(2), `rate_per_km` num(10,4). Unique `(company_id, client_id, state)`.
 
 ### Operations
-- `freights` — `client_id`, `vehicle_id`, `trailer_id` null, `driver_id`, `pricing_model`, `fixed_rate_id` null, `per_km_rate_id` null, `state` char(2) null (per-km only), `origin`, `destination`, `distance_km` null, `freight_value` null (locked at AwaitingPayment), `status`, `started_at`, `finished_at`, `completed_at`. Indexes: `(company_id, status)`, `(company_id, client_id, completed_at)`, `(company_id, vehicle_id, started_at)`.
+- `freights` — `client_id`, `vehicle_id`, `trailer_id` null, `driver_id`, `pricing_model`, `fixed_rate_id` null, `per_km_rate_id` null, `origin` null, `destination` null, `distance_km` null, `toll` null, `fuel_price_per_liter` null, `freight_value` null (locked at AwaitingPayment), `status` (default `to_start`), `started_at`, `finished_at`, `completed_at`, soft deletes. Indexes: `(company_id, status)`, `(company_id, client_id, completed_at)`, `(company_id, vehicle_id, started_at)`.
 - `freight_status_history` — append-only audit: `freight_id`, `from_status`, `to_status`, `user_id`, `occurred_at`, `notes`.
 
 ### Finance
@@ -146,18 +146,19 @@ Dependency-ordered. Each epic will get its own step-level TDD sub-plan when star
 - Per-km rates per client per BR state: CRUD with unique constraint on (client, state).
 - Import UX consideration (CSV upload deferred to post-MVP).
 
-### Epic 4 — Operations: Freights & Lifecycle (L)
+### Epic 4 — Operations: Freights & Lifecycle (L) ✅ DONE
 **Depends on:** 2, 3. **Deliverables:**
-- `spatie/laravel-model-states` freight states: `ToStart`, `InRoute`, `Finished`, `AwaitingKm`, `AwaitingPayment`, `Completed`.
-- Freight creation form (client → pricing model → vehicle → trailer if required → driver → rate selection).
+- `spatie/laravel-model-states` freight states: `ToStart`, `InRoute`, `Finished`, `AwaitingPayment`, `Completed`.
+  - Note: `AwaitingKm` was dropped; distance_km is captured during InRoute→Finished transition for per_km freights.
+- `consumo_medio` (km/L) field added to vehicles for fuel cost estimation.
+- Freight creation 4-step wizard (client → pricing model / rate → vehicle + trailer → review).
 - "Requires trailer" rule enforced at 3 layers (Request / Action / DB trigger).
 - Status transitions with guarded validation:
-  - Finished → AwaitingKm (only if per_km)
-  - Finished → AwaitingPayment (only if fixed)
-  - AwaitingKm requires `distance_km` input, then transitions to AwaitingPayment.
-  - Entering AwaitingPayment **locks `freight_value`** (persisted) + dispatches `FreightEnteredAwaitingPayment` event → creates receivable.
-  - AwaitingPayment → Completed gated on receivable `status='paid'`.
-- `freight_status_history` auto-populated on every transition.
+  - InRoute → Finished captures `distance_km` (required for per_km), `toll`, `fuel_price_per_liter`.
+  - Finished → AwaitingPayment **locks `freight_value`** (persisted) + dispatches `FreightEnteredAwaitingPayment` event.
+  - `freight_value` computed: fixed rate lookup from `FixedFreightRatePrice`; per_km via `bcmul(distance_km, rate_per_km, 2)`.
+  - AwaitingPayment → Completed (manual, receivable payment gating deferred to Epic 6).
+- `freight_status_history` auto-populated on every transition via FreightObserver.
 - `spatie/laravel-activitylog` for user-level audit.
 
 ### Epic 5 — Finance: Expenses, Fuel, Maintenance (M)
