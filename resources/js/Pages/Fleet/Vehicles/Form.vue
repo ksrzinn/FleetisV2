@@ -22,6 +22,7 @@ export default {
             model:           props.vehicle?.model ?? '',
             year:            props.vehicle?.year ?? new Date().getFullYear(),
             notes:           props.vehicle?.notes ?? '',
+            consumo_medio:   props.vehicle?.consumo_medio ?? '',
             active:          props.vehicle?.active ?? true,
         })
         return { form }
@@ -157,6 +158,22 @@ export default {
                             class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
                         <p v-if="form.errors.year" class="mt-1.5 text-xs text-red-600">{{ form.errors.year }}</p>
+                    </div>
+
+                    <!-- Consumo Médio -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Consumo Médio (km/L)</label>
+                        <input
+                            v-model="form.consumo_medio"
+                            type="number"
+                            step="0.1"
+                            min="0.1"
+                            max="99.99"
+                            placeholder="Ex: 8.5"
+                            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-400">Quantos km o veículo percorre com 1 litro</p>
+                        <p v-if="form.errors.consumo_medio" class="mt-1.5 text-xs text-red-600">{{ form.errors.consumo_medio }}</p>
                     </div>
 
                     <!-- Active -->

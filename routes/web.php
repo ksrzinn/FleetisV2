@@ -8,6 +8,8 @@ use App\Modules\Commercial\Http\Controllers\PerKmFreightRateController;
 use App\Modules\Fleet\Http\Controllers\DriverCompensationController;
 use App\Modules\Fleet\Http\Controllers\DriverController;
 use App\Modules\Fleet\Http\Controllers\VehicleController;
+use App\Modules\Operations\Http\Controllers\FreightController;
+use App\Modules\Operations\Http\Controllers\FreightRatesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,6 +42,10 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::resource('clients.freight-tables', ClientFreightTableController::class)->shallow();
     Route::resource('freight-tables.fixed-rates', FixedFreightRateController::class)->shallow();
     Route::resource('clients.per-km-rates', PerKmFreightRateController::class)->shallow();
+
+    Route::resource('freights', FreightController::class)->only(['index', 'create', 'store', 'show']);
+    Route::post('freights/{freight}/transition', [FreightController::class, 'transition'])->name('freights.transition');
+    Route::get('freight-rates', [FreightRatesController::class, 'index'])->name('freight-rates.index');
 });
 
 require __DIR__.'/auth.php';

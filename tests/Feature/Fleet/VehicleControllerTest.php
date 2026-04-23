@@ -129,4 +129,25 @@ class VehicleControllerTest extends TenantTestCase
         $response->assertRedirect('/vehicles');
         $this->assertSoftDeleted('vehicles', ['id' => $vehicle->id]);
     }
+
+    public function test_operator_can_set_consumo_medio_on_vehicle(): void
+    {
+        $user = $this->makeUserWithRole('Operator');
+        $type = VehicleType::factory()->create();
+
+        $this->actingAsTenant($user)->post('/vehicles', [
+            'kind' => 'vehicle',
+            'vehicle_type_id' => $type->id,
+            'license_plate' => 'ABC-1234',
+            'brand' => 'Volvo',
+            'model' => 'FH',
+            'year' => 2020,
+            'consumo_medio' => 8.5,
+        ]);
+
+        $this->assertDatabaseHas('vehicles', [
+            'company_id' => $user->company_id,
+            'consumo_medio' => 8.5,
+        ]);
+    }
 }

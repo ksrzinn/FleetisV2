@@ -4,12 +4,20 @@ namespace App\Modules\Commercial\Models;
 
 use App\Modules\Fleet\Models\VehicleType;
 use App\Modules\Tenancy\Traits\BelongsToCompany;
+use Database\Factories\Commercial\PerKmFreightRatePriceFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PerKmFreightRatePrice extends Model
 {
-    use BelongsToCompany;
+    /** @use HasFactory<PerKmFreightRatePriceFactory> */
+    use BelongsToCompany, HasFactory;
+
+    protected static function newFactory(): PerKmFreightRatePriceFactory
+    {
+        return PerKmFreightRatePriceFactory::new();
+    }
 
     protected $fillable = [
         'company_id', 'per_km_freight_rate_id', 'vehicle_type_id', 'rate_per_km',

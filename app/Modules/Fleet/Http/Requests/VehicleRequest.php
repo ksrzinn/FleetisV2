@@ -32,6 +32,7 @@ class VehicleRequest extends FormRequest
             'model' => ['required', 'string', 'max:100'],
             'year' => ['required', 'integer', 'min:1980', 'max:'.(date('Y') + 1)],
             'notes' => ['nullable', 'string'],
+            'consumo_medio' => ['nullable', 'numeric', 'min:0.1', 'max:99.99'],
             'active' => ['boolean'],
         ];
     }

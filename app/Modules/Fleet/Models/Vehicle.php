@@ -16,10 +16,10 @@ class Vehicle extends Model
 
     protected $fillable = [
         'kind', 'vehicle_type_id', 'license_plate', 'renavam',
-        'brand', 'model', 'year', 'notes', 'active',
+        'brand', 'model', 'year', 'notes', 'consumo_medio', 'active',
     ];
 
-    protected $casts = ['active' => 'boolean', 'year' => 'integer'];
+    protected $casts = ['active' => 'boolean', 'year' => 'integer', 'consumo_medio' => 'decimal:2'];
 
     protected static function newFactory(): VehicleFactory
     {
