@@ -14,6 +14,11 @@ class PerKmFreightRatePrice extends Model
     /** @use HasFactory<PerKmFreightRatePriceFactory> */
     use BelongsToCompany, HasFactory;
 
+    protected static function newFactory(): PerKmFreightRatePriceFactory
+    {
+        return PerKmFreightRatePriceFactory::new();
+    }
+
     protected $fillable = [
         'company_id', 'per_km_freight_rate_id', 'vehicle_type_id', 'rate_per_km',
     ];

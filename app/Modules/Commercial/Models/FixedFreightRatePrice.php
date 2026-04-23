@@ -14,6 +14,11 @@ class FixedFreightRatePrice extends Model
     /** @use HasFactory<FixedFreightRatePriceFactory> */
     use BelongsToCompany, HasFactory;
 
+    protected static function newFactory(): FixedFreightRatePriceFactory
+    {
+        return FixedFreightRatePriceFactory::new();
+    }
+
     protected $fillable = [
         'company_id', 'fixed_freight_rate_id', 'vehicle_type_id',
         'price', 'tolls', 'fuel_cost',

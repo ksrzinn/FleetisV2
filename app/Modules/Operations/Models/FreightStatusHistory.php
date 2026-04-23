@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FreightStatusHistory extends Model
 {
+    protected $table = 'freight_status_history';
+
     public $timestamps = false;
 
     protected $fillable = [
