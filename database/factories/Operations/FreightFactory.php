@@ -33,19 +33,19 @@ class FreightFactory extends Factory
             'per_km_rate_id' => null,
             'origin'         => null,
             'destination'    => null,
-            'status'         => ToStart::class,
+            'status'         => 'to_start',
         ];
     }
 
     public function inRoute(): static
     {
-        return $this->state(['status' => InRoute::class, 'started_at' => now()]);
+        return $this->state(['status' => 'in_route', 'started_at' => now()]);
     }
 
     public function finished(): static
     {
         return $this->state([
-            'status'      => Finished::class,
+            'status'      => 'finished',
             'started_at'  => now()->subHours(3),
             'finished_at' => now(),
         ]);
@@ -54,7 +54,7 @@ class FreightFactory extends Factory
     public function awaitingPayment(): static
     {
         return $this->state([
-            'status'      => AwaitingPayment::class,
+            'status'      => 'awaiting_payment',
             'started_at'  => now()->subHours(4),
             'finished_at' => now()->subHour(),
         ]);
