@@ -29,7 +29,10 @@ class FreightObserver
             'from_status' => $freight->getOriginal('status'),
             'to_status'   => (string) $freight->status,
             'user_id'     => auth()->id(),
+            'notes'       => $freight->pendingStatusNote,
             'occurred_at' => now(),
         ]);
+
+        $freight->pendingStatusNote = null;
     }
 }

@@ -27,6 +27,9 @@ export default {
         freight: Object,
         tollDefault: { type: [Number, String], default: null },
         estimatedLiters: { type: [Number, String], default: null },
+        canComputeFreightValue: { type: Boolean, default: true },
+        canDelete: { type: Boolean, default: false },
+        rateEditLink: { type: String, default: null },
     },
 
     setup(props) {
@@ -42,6 +45,7 @@ export default {
     data() {
         return {
             showFinishModal: false,
+            showDeleteConfirm: false,
             statusLabels: STATUS_LABELS,
             statusColors: STATUS_COLORS,
         }
@@ -79,6 +83,9 @@ export default {
             if (!val) return '—'
             return new Date(val).toLocaleString('pt-BR')
         },
+        deleteFreight() {
+            this.$inertia.delete(`/freights/${this.freight.id}`)
+        },
     },
 }
 </script>
@@ -110,15 +117,49 @@ export default {
                         class="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-yellow-400 transition-colors">
                         Finalizar Frete
                     </button>
-                    <button v-if="freight.status === 'finished'" @click="transition('to_awaiting_payment')"
-                        class="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-orange-400 transition-colors">
-                        Enviar para Pagamento
-                    </button>
+                    <template v-if="freight.status === 'finished'">
+                        <button v-if="canComputeFreightValue" @click="transition('to_awaiting_payment')"
+                            class="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-orange-400 transition-colors">
+                            Enviar para Pagamento
+                        </button>
+                    </template>
                 </div>
             </div>
         </template>
 
         <div class="mx-auto max-w-3xl space-y-6">
+
+            <!-- No-price warning banner -->
+            <div v-if="freight.status === 'finished' && !canComputeFreightValue"
+                class="rounded-xl border border-amber-200 bg-amber-50 p-5">
+                <div class="flex gap-3">
+                    <svg class="h-5 w-5 shrink-0 text-amber-500 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold text-amber-800">Não é possível enviar para pagamento</p>
+                        <p class="mt-1 text-sm text-amber-700">
+                            Nenhum preço está cadastrado para o tipo de veículo deste frete. Sem valor definido, a cobrança não pode ser gerada.
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-3">
+                            <a v-if="rateEditLink" :href="rateEditLink"
+                                class="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500 transition-colors">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                                </svg>
+                                Configurar preço na tarifa
+                            </a>
+                            <button v-if="canDelete" @click="showDeleteConfirm = true"
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 transition-colors">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                                Excluir frete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Main info card -->
             <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
@@ -258,6 +299,27 @@ export default {
                     <button :disabled="finishForm.processing" @click="submitFinish"
                         class="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-400 disabled:opacity-60">
                         {{ finishForm.processing ? 'Salvando...' : 'Confirmar' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Delete confirmation modal -->
+        <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div class="w-full max-w-sm rounded-xl bg-white shadow-xl ring-1 ring-gray-200">
+                <div class="px-6 py-5 border-b border-gray-100">
+                    <h3 class="text-base font-semibold text-gray-900">Excluir frete #{{ freight.id }}?</h3>
+                </div>
+                <div class="px-6 py-5">
+                    <p class="text-sm text-gray-600">Esta ação não pode ser desfeita. O frete e todo seu histórico de status serão removidos.</p>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
+                    <button @click="showDeleteConfirm = false"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button @click="deleteFreight"
+                        class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500">
+                        Excluir
                     </button>
                 </div>
             </div>

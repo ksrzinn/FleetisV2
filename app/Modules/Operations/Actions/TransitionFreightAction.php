@@ -7,6 +7,7 @@ use App\Modules\Commercial\Models\PerKmFreightRatePrice;
 use App\Modules\Operations\Events\FreightEnteredAwaitingPayment;
 use App\Modules\Operations\Models\Freight;
 use App\Modules\Operations\States\AwaitingPayment;
+use App\Modules\Operations\States\Completed;
 use App\Modules\Operations\States\Finished;
 use App\Modules\Operations\States\InRoute;
 use Spatie\ModelStates\Exceptions\TransitionNotFound;
@@ -20,6 +21,7 @@ class TransitionFreightAction
             'to_in_route'         => $this->toInRoute($freight),
             'to_finished'         => $this->toFinished($freight, $data),
             'to_awaiting_payment' => $this->toAwaitingPayment($freight),
+            'to_completed'        => $this->toCompleted($freight),
             default               => throw new TransitionNotFound(),
         };
     }
@@ -50,10 +52,23 @@ class TransitionFreightAction
     {
         $freightValue = $this->computeFreightValue($freight);
 
+        if ($freightValue === null) {
+            throw new \DomainException('no_price_for_vehicle_type');
+        }
+
         $freight->status->transitionTo(AwaitingPayment::class);
         $freight->update(['freight_value' => $freightValue]);
 
         FreightEnteredAwaitingPayment::dispatch($freight);
+
+        return $freight->fresh();
+    }
+
+    public function toCompleted(Freight $freight, string $notes = 'Frete concluído automaticamente após pagamento integral.'): Freight
+    {
+        $freight->pendingStatusNote = $notes;
+        $freight->status->transitionTo(Completed::class);
+        $freight->update(['completed_at' => now()]);
 
         return $freight->fresh();
     }
