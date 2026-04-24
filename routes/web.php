@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::resource('freight-tables.fixed-rates', FixedFreightRateController::class)->shallow();
     Route::resource('clients.per-km-rates', PerKmFreightRateController::class)->shallow();
 
-    Route::resource('freights', FreightController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('freights', FreightController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
     Route::post('freights/{freight}/transition', [FreightController::class, 'transition'])->name('freights.transition');
     Route::get('freight-rates', [FreightRatesController::class, 'index'])->name('freight-rates.index');
 

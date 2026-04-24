@@ -52,6 +52,10 @@ class TransitionFreightAction
     {
         $freightValue = $this->computeFreightValue($freight);
 
+        if ($freightValue === null) {
+            throw new \DomainException('no_price_for_vehicle_type');
+        }
+
         $freight->status->transitionTo(AwaitingPayment::class);
         $freight->update(['freight_value' => $freightValue]);
 

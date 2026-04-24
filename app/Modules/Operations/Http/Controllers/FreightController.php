@@ -5,6 +5,7 @@ namespace App\Modules\Operations\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Commercial\Models\Client;
 use App\Modules\Commercial\Models\FixedFreightRatePrice;
+use App\Modules\Commercial\Models\PerKmFreightRatePrice;
 use App\Modules\Fleet\Models\Driver;
 use App\Modules\Fleet\Models\Vehicle;
 use App\Modules\Fleet\Models\VehicleType;
@@ -77,9 +78,12 @@ class FreightController extends Controller
         }
 
         return Inertia::render('Operations/Show', [
-            'freight'          => $freight,
-            'tollDefault'      => $tollDefault,
-            'estimatedLiters'  => $freight->estimatedLiters(),
+            'freight'               => $freight,
+            'tollDefault'           => $tollDefault,
+            'estimatedLiters'       => $freight->estimatedLiters(),
+            'canComputeFreightValue' => $this->canComputeFreightValue($freight),
+            'canDelete'             => auth()->user()->can('delete', $freight),
+            'rateEditLink'          => $this->rateEditLink($freight),
         ]);
     }
 
@@ -87,9 +91,58 @@ class FreightController extends Controller
     {
         $this->authorize('transition', $freight);
 
-        $action->handle($freight, $request->validated());
+        try {
+            $action->handle($freight, $request->validated());
+        } catch (\DomainException $e) {
+            if ($e->getMessage() === 'no_price_for_vehicle_type') {
+                return back()->with('freight_no_value', true);
+            }
+            throw $e;
+        }
 
         return back()->with('success', 'Status atualizado.');
+    }
+
+    public function destroy(Freight $freight): RedirectResponse
+    {
+        $this->authorize('delete', $freight);
+
+        $freight->delete();
+
+        return redirect()->route('freights.index')->with('success', 'Frete excluído.');
+    }
+
+    private function canComputeFreightValue(Freight $freight): bool
+    {
+        $vehicleTypeId = $freight->vehicle?->vehicle_type_id;
+        if (! $vehicleTypeId) {
+            return false;
+        }
+
+        if ($freight->pricing_model === 'fixed') {
+            return FixedFreightRatePrice::where('fixed_freight_rate_id', $freight->fixed_rate_id)
+                ->where('vehicle_type_id', $vehicleTypeId)
+                ->exists();
+        }
+
+        $hasRate = PerKmFreightRatePrice::where('per_km_freight_rate_id', $freight->per_km_rate_id)
+            ->where('vehicle_type_id', $vehicleTypeId)
+            ->exists();
+
+        return $hasRate && $freight->distance_km !== null;
+    }
+
+    private function rateEditLink(Freight $freight): ?string
+    {
+        if ($freight->pricing_model === 'fixed' && $freight->fixed_rate_id) {
+            return route('fixed-rates.edit', $freight->fixed_rate_id);
+        }
+
+        if ($freight->pricing_model === 'per_km' && $freight->per_km_rate_id) {
+            return route('per-km-rates.edit', $freight->per_km_rate_id);
+        }
+
+        return null;
     }
 
     /** @return array<string, string> */
