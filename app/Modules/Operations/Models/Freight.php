@@ -24,6 +24,8 @@ class Freight extends Model
     /** @use HasFactory<FreightFactory> */
     use BelongsToCompany, HasFactory, HasStates, LogsActivity, SoftDeletes;
 
+    public ?string $pendingStatusNote = null;
+
     protected $fillable = [
         'client_id', 'vehicle_id', 'trailer_id', 'driver_id',
         'pricing_model', 'fixed_rate_id', 'per_km_rate_id',

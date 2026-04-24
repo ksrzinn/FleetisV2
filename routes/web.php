@@ -8,6 +8,8 @@ use App\Modules\Commercial\Http\Controllers\PerKmFreightRateController;
 use App\Modules\Fleet\Http\Controllers\DriverCompensationController;
 use App\Modules\Fleet\Http\Controllers\DriverController;
 use App\Modules\Fleet\Http\Controllers\VehicleController;
+use App\Modules\Finance\Http\Controllers\PaymentController;
+use App\Modules\Finance\Http\Controllers\ReceivableController;
 use App\Modules\Operations\Http\Controllers\FreightController;
 use App\Modules\Operations\Http\Controllers\FreightRatesController;
 use Illuminate\Foundation\Application;
@@ -46,6 +48,9 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::resource('freights', FreightController::class)->only(['index', 'create', 'store', 'show']);
     Route::post('freights/{freight}/transition', [FreightController::class, 'transition'])->name('freights.transition');
     Route::get('freight-rates', [FreightRatesController::class, 'index'])->name('freight-rates.index');
+
+    Route::resource('receivables', ReceivableController::class)->only(['index', 'show']);
+    Route::post('receivables/{receivable}/payments', [PaymentController::class, 'store'])->name('receivables.payments.store');
 });
 
 require __DIR__.'/auth.php';

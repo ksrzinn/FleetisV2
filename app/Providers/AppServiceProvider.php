@@ -16,9 +16,14 @@ use App\Modules\Fleet\Models\Vehicle;
 use App\Modules\Fleet\Policies\DriverCompensationPolicy;
 use App\Modules\Fleet\Policies\DriverPolicy;
 use App\Modules\Fleet\Policies\VehiclePolicy;
+use App\Modules\Finance\Models\Receivable;
+use App\Modules\Finance\Policies\ReceivablePolicy;
+use App\Modules\Operations\Events\FreightEnteredAwaitingPayment;
+use App\Modules\Operations\Listeners\CreateReceivableForFreight;
 use App\Modules\Operations\Models\Freight;
 use App\Modules\Operations\Observers\FreightObserver;
 use App\Modules\Operations\Policies\FreightPolicy;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -57,5 +62,8 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(Freight::class, FreightPolicy::class);
         Freight::observe(FreightObserver::class);
+
+        Gate::policy(Receivable::class, ReceivablePolicy::class);
+        Event::listen(FreightEnteredAwaitingPayment::class, CreateReceivableForFreight::class);
     }
 }
