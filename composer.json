@@ -12,6 +12,7 @@
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "spatie/holidays": "^1.24",
         "spatie/laravel-activitylog": "^4",
         "spatie/laravel-data": "^4",
         "spatie/laravel-model-states": "^2",
