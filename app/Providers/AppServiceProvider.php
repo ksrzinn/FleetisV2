@@ -16,11 +16,14 @@ use App\Modules\Fleet\Models\Vehicle;
 use App\Modules\Fleet\Policies\DriverCompensationPolicy;
 use App\Modules\Fleet\Policies\DriverPolicy;
 use App\Modules\Fleet\Policies\VehiclePolicy;
+use App\Modules\Finance\Models\Bill;
+use App\Modules\Finance\Models\BillInstallment;
 use App\Modules\Finance\Models\Expense;
 use App\Modules\Finance\Models\ExpenseCategory;
 use App\Modules\Finance\Models\FuelRecord;
 use App\Modules\Finance\Models\MaintenanceRecord;
 use App\Modules\Finance\Models\Receivable;
+use App\Modules\Finance\Policies\BillPolicy;
 use App\Modules\Finance\Policies\ExpenseCategoryPolicy;
 use App\Modules\Finance\Policies\ExpensePolicy;
 use App\Modules\Finance\Policies\FuelRecordPolicy;
@@ -72,6 +75,8 @@ class AppServiceProvider extends ServiceProvider
         Freight::observe(FreightObserver::class);
 
         Gate::policy(Receivable::class, ReceivablePolicy::class);
+        Gate::policy(Bill::class, BillPolicy::class);
+        Gate::policy(BillInstallment::class, BillPolicy::class);
         Gate::policy(ExpenseCategory::class, ExpenseCategoryPolicy::class);
         Gate::policy(Expense::class, ExpensePolicy::class);
         Gate::policy(FuelRecord::class, FuelRecordPolicy::class);
