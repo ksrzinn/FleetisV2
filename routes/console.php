@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\Finance\GenerateRecurringBillInstallmentsCommand;
 use App\Console\Commands\Finance\MarkOverdueReceivablesCommand;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -10,3 +11,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command(MarkOverdueReceivablesCommand::class)->daily();
+Schedule::command(GenerateRecurringBillInstallmentsCommand::class)->dailyAt('02:00');

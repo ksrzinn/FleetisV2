@@ -8,6 +8,12 @@ use App\Modules\Commercial\Http\Controllers\PerKmFreightRateController;
 use App\Modules\Fleet\Http\Controllers\DriverCompensationController;
 use App\Modules\Fleet\Http\Controllers\DriverController;
 use App\Modules\Fleet\Http\Controllers\VehicleController;
+use App\Modules\Finance\Http\Controllers\BillController;
+use App\Modules\Finance\Http\Controllers\BillPaymentController;
+use App\Modules\Finance\Http\Controllers\ExpenseCategoryController;
+use App\Modules\Finance\Http\Controllers\ExpenseController;
+use App\Modules\Finance\Http\Controllers\FuelRecordController;
+use App\Modules\Finance\Http\Controllers\MaintenanceRecordController;
 use App\Modules\Finance\Http\Controllers\PaymentController;
 use App\Modules\Finance\Http\Controllers\ReceivableController;
 use App\Modules\Operations\Http\Controllers\FreightController;
@@ -51,6 +57,14 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
 
     Route::resource('receivables', ReceivableController::class)->only(['index', 'show']);
     Route::post('receivables/{receivable}/payments', [PaymentController::class, 'store'])->name('receivables.payments.store');
+
+    Route::resource('bills', BillController::class);
+    Route::post('bill-installments/{installment}/payments', [BillPaymentController::class, 'store'])->name('bill-installments.payments.store');
+
+    Route::post('expense-categories', [ExpenseCategoryController::class, 'store'])->name('expense-categories.store');
+    Route::resource('expenses', ExpenseController::class)->except('show');
+    Route::resource('fuel-records', FuelRecordController::class)->except('show');
+    Route::resource('maintenance-records', MaintenanceRecordController::class)->except('show');
 });
 
 require __DIR__.'/auth.php';

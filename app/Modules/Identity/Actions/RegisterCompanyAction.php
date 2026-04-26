@@ -3,6 +3,7 @@
 namespace App\Modules\Identity\Actions;
 
 use App\Models\User;
+use App\Modules\Finance\Actions\SeedExpenseCategoriesAction;
 use App\Modules\Tenancy\Models\Company;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -10,7 +11,10 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RegisterCompanyAction
 {
-    public function __construct(private SeedCompanyRolesAction $seedRoles) {}
+    public function __construct(
+        private SeedCompanyRolesAction $seedRoles,
+        private SeedExpenseCategoriesAction $seedCategories,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $input
@@ -33,6 +37,7 @@ class RegisterCompanyAction
             ]);
 
             $this->seedRoles->handle($company);
+            $this->seedCategories->handle($company);
 
             app(PermissionRegistrar::class)->setPermissionsTeamId($company->id);
             $user->assignRole('Admin');
