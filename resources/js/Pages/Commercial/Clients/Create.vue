@@ -14,6 +14,8 @@ export default {
             email: '',
             phone: '',
             active: true,
+            payment_term_type: null,
+            payment_term_value: null,
         })
         return { form }
     },
@@ -22,6 +24,7 @@ export default {
         submit() {
             this.form.document = this.stripMask(this.form.document)
             this.form.phone = this.stripMask(this.form.phone)
+            console.log(this.form)
             this.form.post(route('clients.store'))
         },
         stripMask(value) {
@@ -72,6 +75,48 @@ export default {
                             <div class="flex items-center gap-2">
                                 <input v-model="form.active" type="checkbox" id="active" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                 <label for="active" class="text-sm font-medium text-gray-700">Ativo</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment terms -->
+                    <div class="border-t border-gray-100 p-6">
+                        <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-4">Condições de Pagamento</h3>
+                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Tipo de prazo</label>
+                                <select v-model="form.payment_term_type" @change="form.payment_term_value = null"
+                                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                    <option :value="null">Não configurado (30 dias)</option>
+                                    <option value="daily">Pagamento no dia</option>
+                                    <option value="days_after">Dias após o frete</option>
+                                    <option value="weekly">Dia da semana</option>
+                                    <option value="monthly">Dia do mês</option>
+                                </select>
+                            </div>
+                            <div v-if="form.payment_term_type === 'days_after'">
+                                <label class="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Dias após o frete</label>
+                                <input v-model.number="form.payment_term_value" type="number" min="1" max="365" placeholder="Ex: 30"
+                                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                            </div>
+                            <div v-else-if="form.payment_term_type === 'monthly'">
+                                <label class="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Dia do mês (1–28)</label>
+                                <input v-model.number="form.payment_term_value" type="number" min="1" max="28" placeholder="Ex: 15"
+                                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                            </div>
+                            <div v-else-if="form.payment_term_type === 'weekly'">
+                                <label class="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Dia da semana</label>
+                                <select v-model.number="form.payment_term_value"
+                                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                    <option :value="null">Selecione...</option>
+                                    <option :value="1">Segunda-feira</option>
+                                    <option :value="2">Terça-feira</option>
+                                    <option :value="3">Quarta-feira</option>
+                                    <option :value="4">Quinta-feira</option>
+                                    <option :value="5">Sexta-feira</option>
+                                    <option :value="6">Sábado</option>
+                                    <option :value="7">Domingo</option>
+                                </select>
                             </div>
                         </div>
                     </div>

@@ -24,6 +24,7 @@ class Client extends Model
         'address_street', 'address_number', 'address_complement',
         'address_neighborhood', 'address_city', 'address_state',
         'address_zip', 'active',
+        'payment_term_type', 'payment_term_value',
     ];
 
     protected $casts = ['active' => 'boolean'];

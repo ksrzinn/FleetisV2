@@ -29,6 +29,8 @@ class UpdateClientRequest extends FormRequest
             'address_state'       => ['nullable', 'string', 'size:2'],
             'address_zip'         => ['nullable', 'string', 'size:8'],
             'active'              => ['boolean'],
+            'payment_term_type'  => ['nullable', 'in:monthly,weekly,daily,days_after'],
+            'payment_term_value' => ['nullable', 'integer', 'min:1'],
         ];
     }
 
