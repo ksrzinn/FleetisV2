@@ -6,7 +6,12 @@ use Symfony\Component\Console\Input\ArgvInput;
 define('LARAVEL_START', microtime(true));
 
 // Register the Composer autoloader...
-require __DIR__.'/vendor/autoload.php';
+$loader = require __DIR__.'/vendor/autoload.php';
+// Prepend worktree app/ so new/changed classes are found before the main repo
+// (vendor is a symlink; its PSR-4 map points to the main repo by default).
+$loader->addPsr4('App\\',      [__DIR__.'/app/'],      true);
+$loader->addPsr4('Database\\', [__DIR__.'/database/'], true);
+unset($loader);
 
 // Bootstrap Laravel and handle the command...
 $status = (require_once __DIR__.'/bootstrap/app.php')
