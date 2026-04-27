@@ -10,6 +10,7 @@ use App\Modules\Fleet\Models\Driver;
 use App\Modules\Fleet\Models\Vehicle;
 use App\Modules\Fleet\Models\VehicleType;
 use App\Modules\Operations\Actions\CreateFreightAction;
+use App\Modules\Reporting\Services\FreightFinancialSummaryService;
 use App\Modules\Operations\Actions\TransitionFreightAction;
 use App\Modules\Operations\Http\Requests\StoreFreightRequest;
 use App\Modules\Operations\Http\Requests\TransitionFreightRequest;
@@ -60,7 +61,7 @@ class FreightController extends Controller
         return redirect()->route('freights.show', $freight)->with('success', 'Frete criado com sucesso.');
     }
 
-    public function show(Freight $freight): Response
+    public function show(Freight $freight, FreightFinancialSummaryService $summaryService): Response
     {
         $this->authorize('view', $freight);
 
@@ -84,6 +85,7 @@ class FreightController extends Controller
             'canComputeFreightValue' => $this->canComputeFreightValue($freight),
             'canDelete'             => auth()->user()->can('delete', $freight),
             'rateEditLink'          => $this->rateEditLink($freight),
+            'financialSummary'      => $summaryService->forFreight($freight),
         ]);
     }
 

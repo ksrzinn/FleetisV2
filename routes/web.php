@@ -18,6 +18,8 @@ use App\Modules\Finance\Http\Controllers\PaymentController;
 use App\Modules\Finance\Http\Controllers\ReceivableController;
 use App\Modules\Operations\Http\Controllers\FreightController;
 use App\Modules\Operations\Http\Controllers\FreightRatesController;
+use App\Modules\Reporting\Http\Controllers\DashboardController;
+use App\Modules\Reporting\Http\Controllers\VehicleReportController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,9 +33,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', 'tenant'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified', 'tenant'])->name('dashboard');
 
 Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -65,6 +65,9 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::resource('expenses', ExpenseController::class)->except('show');
     Route::resource('fuel-records', FuelRecordController::class)->except('show');
     Route::resource('maintenance-records', MaintenanceRecordController::class)->except('show');
+
+    Route::get('reports/vehicles', [VehicleReportController::class, 'index'])->name('reports.vehicles.index');
+    Route::get('reports/vehicles/{vehicle}', [VehicleReportController::class, 'show'])->name('reports.vehicles.show');
 });
 
 require __DIR__.'/auth.php';
