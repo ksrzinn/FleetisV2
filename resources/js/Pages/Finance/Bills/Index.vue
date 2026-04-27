@@ -29,8 +29,10 @@ export default {
 
     data() {
         return {
-            billType:     this.filters?.bill_type ?? '',
-            supplier:     this.filters?.supplier ?? '',
+            billType:     this.filters?.bill_type    ?? '',
+            supplier:     this.filters?.supplier     ?? '',
+            dueDateFrom:  this.filters?.due_date_from ?? '',
+            dueDateTo:    this.filters?.due_date_to   ?? '',
             deleteTarget: null,
             typeLabels:   BILL_TYPE_LABELS,
             typeColors:   BILL_TYPE_COLORS,
@@ -40,9 +42,63 @@ export default {
     methods: {
         applyFilters() {
             router.get('/bills', {
-                bill_type: this.billType || undefined,
-                supplier:  this.supplier || undefined,
+                bill_type:     this.billType    || undefined,
+                supplier:      this.supplier    || undefined,
+                due_date_from: this.dueDateFrom || undefined,
+                due_date_to:   this.dueDateTo   || undefined,
             }, { preserveState: true, replace: true })
+        },
+        activePreset() {
+            const pad = (n) => String(n).padStart(2, '0')
+            const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+
+            const now   = new Date()
+            const today = fmt(now)
+
+            const dayOfWeek  = (now.getDay() + 6) % 7
+            const monday     = new Date(now); monday.setDate(now.getDate() - dayOfWeek)
+            const sunday     = new Date(monday); sunday.setDate(monday.getDate() + 6)
+            const weekStart  = fmt(monday)
+            const weekEnd    = fmt(sunday)
+
+            const monthStart = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`
+            const lastDay    = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+            const monthEnd   = fmt(lastDay)
+
+            if (this.dueDateFrom === today      && this.dueDateTo === today)    return 'today'
+            if (this.dueDateFrom === weekStart  && this.dueDateTo === weekEnd)  return 'week'
+            if (this.dueDateFrom === monthStart && this.dueDateTo === monthEnd) return 'month'
+            return null
+        },
+        applyPreset(preset) {
+            const pad = (n) => String(n).padStart(2, '0')
+            const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+            const now = new Date()
+
+            if (this.activePreset() === preset) {
+                this.dueDateFrom = ''
+                this.dueDateTo   = ''
+                this.applyFilters()
+                return
+            }
+
+            if (preset === 'today') {
+                const today = fmt(now)
+                this.dueDateFrom = today
+                this.dueDateTo   = today
+            } else if (preset === 'week') {
+                const dayOfWeek = (now.getDay() + 6) % 7
+                const monday    = new Date(now); monday.setDate(now.getDate() - dayOfWeek)
+                const sunday    = new Date(monday); sunday.setDate(monday.getDate() + 6)
+                this.dueDateFrom = fmt(monday)
+                this.dueDateTo   = fmt(sunday)
+            } else if (preset === 'month') {
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+                this.dueDateFrom = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`
+                this.dueDateTo   = fmt(lastDay)
+            }
+
+            this.applyFilters()
         },
         progressLabel(bill) {
             const paid  = bill.paid_installments_count
@@ -86,7 +142,7 @@ export default {
         </template>
 
         <!-- Filters -->
-        <div class="mb-5 flex flex-wrap gap-3">
+        <div class="mb-5 flex flex-wrap gap-3 items-center">
             <select v-model="billType" @change="applyFilters"
                 class="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 <option value="">Todos os tipos</option>
@@ -94,6 +150,28 @@ export default {
             </select>
             <input v-model="supplier" type="text" placeholder="Buscar fornecedor..." @input="applyFilters"
                 class="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            <input v-model="dueDateFrom" type="date" @change="applyFilters"
+                class="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            <input v-model="dueDateTo" type="date" @change="applyFilters"
+                class="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            <button @click="applyPreset('today')"
+                :class="activePreset() === 'today'
+                    ? 'rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm'
+                    : 'rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'">
+                Hoje
+            </button>
+            <button @click="applyPreset('week')"
+                :class="activePreset() === 'week'
+                    ? 'rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm'
+                    : 'rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'">
+                Esta Semana
+            </button>
+            <button @click="applyPreset('month')"
+                :class="activePreset() === 'month'
+                    ? 'rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm'
+                    : 'rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'">
+                Este Mês
+            </button>
         </div>
 
         <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
