@@ -238,6 +238,55 @@ export default {
                     </li>
                 </ul>
             </div>
+
+            <!-- Financial Summary card -->
+            <div v-if="financialSummary" class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+                <div class="px-6 py-5 border-b border-gray-100">
+                    <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Resumo Financeiro</h2>
+                </div>
+
+                <!-- Receivable -->
+                <div v-if="financialSummary.receivable" class="border-b border-gray-100 px-6 py-4">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Conta a Receber</p>
+                    <dl class="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <dt class="text-gray-500">Valor</dt>
+                            <dd class="font-medium text-gray-900">{{ formatCurrency(financialSummary.receivable.amount_due) }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Recebido</dt>
+                            <dd class="font-medium text-green-700">{{ formatCurrency(financialSummary.receivable.amount_paid) }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Status</dt>
+                            <dd class="font-medium text-gray-900">{{ financialSummary.receivable.status }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div v-else class="px-6 py-4 text-sm text-gray-400">Nenhuma conta a receber vinculada a este frete.</div>
+
+                <!-- Expenses -->
+                <div v-if="financialSummary.expenses?.length" class="border-b border-gray-100 px-6 py-4">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Despesas</p>
+                    <ul class="space-y-1 text-sm">
+                        <li v-for="e in financialSummary.expenses" :key="e.id" class="flex items-center justify-between">
+                            <span class="text-gray-700">{{ e.expense_category?.name ?? '—' }}</span>
+                            <span class="font-medium text-gray-900">{{ formatCurrency(e.amount) }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Fuel records -->
+                <div v-if="financialSummary.fuel_records?.length" class="px-6 py-4">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Abastecimentos</p>
+                    <ul class="space-y-1 text-sm">
+                        <li v-for="f in financialSummary.fuel_records" :key="f.id" class="flex items-center justify-between">
+                            <span class="text-gray-700">{{ f.fueled_at ? new Date(f.fueled_at).toLocaleDateString('pt-BR') : '—' }}</span>
+                            <span class="font-medium text-gray-900">{{ formatCurrency(f.total_cost) }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Finish modal -->
@@ -301,55 +350,6 @@ export default {
                         class="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-400 disabled:opacity-60">
                         {{ finishForm.processing ? 'Salvando...' : 'Confirmar' }}
                     </button>
-                </div>
-            </div>
-        </div>
-            <!-- Financial Summary card -->
-            <div v-if="financialSummary" class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
-                <div class="px-6 py-5 border-b border-gray-100">
-                    <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Resumo Financeiro</h2>
-                </div>
-
-                <!-- Receivable -->
-                <div v-if="financialSummary.receivable" class="border-b border-gray-100 px-6 py-4">
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Conta a Receber</p>
-                    <dl class="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-                            <dt class="text-gray-500">Valor</dt>
-                            <dd class="font-medium text-gray-900">{{ formatCurrency(financialSummary.receivable.amount_due) }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Recebido</dt>
-                            <dd class="font-medium text-green-700">{{ formatCurrency(financialSummary.receivable.amount_paid) }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Status</dt>
-                            <dd class="font-medium text-gray-900">{{ financialSummary.receivable.status }}</dd>
-                        </div>
-                    </dl>
-                </div>
-                <div v-else class="px-6 py-4 text-sm text-gray-400">Nenhuma conta a receber vinculada a este frete.</div>
-
-                <!-- Expenses -->
-                <div v-if="financialSummary.expenses?.length" class="border-b border-gray-100 px-6 py-4">
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Despesas</p>
-                    <ul class="space-y-1 text-sm">
-                        <li v-for="e in financialSummary.expenses" :key="e.id" class="flex items-center justify-between">
-                            <span class="text-gray-700">{{ e.expense_category?.name ?? '—' }}</span>
-                            <span class="font-medium text-gray-900">{{ formatCurrency(e.amount) }}</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Fuel records -->
-                <div v-if="financialSummary.fuel_records?.length" class="px-6 py-4">
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Abastecimentos</p>
-                    <ul class="space-y-1 text-sm">
-                        <li v-for="f in financialSummary.fuel_records" :key="f.id" class="flex items-center justify-between">
-                            <span class="text-gray-700">{{ f.fueled_at ? new Date(f.fueled_at).toLocaleDateString('pt-BR') : '—' }}</span>
-                            <span class="font-medium text-gray-900">{{ formatCurrency(f.total_cost) }}</span>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
