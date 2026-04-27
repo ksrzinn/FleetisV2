@@ -22,15 +22,17 @@ class BillController extends Controller
             'installments',
             'installments as paid_installments_count' => fn ($q) => $q->whereNotNull('paid_at'),
         ])
-            ->when(request('bill_type'), fn ($q, $t) => $q->where('bill_type', $t))
-            ->when(request('supplier'), fn ($q, $s) => $q->where('supplier', 'ilike', "%{$s}%"))
+            ->when(request('bill_type'),     fn ($q, $t) => $q->where('bill_type', $t))
+            ->when(request('supplier'),      fn ($q, $s) => $q->where('supplier', 'ilike', "%{$s}%"))
+            ->when(request('due_date_from'), fn ($q, $d) => $q->where('due_date', '>=', $d))
+            ->when(request('due_date_to'),   fn ($q, $d) => $q->where('due_date', '<=', $d))
             ->orderByDesc('due_date')
             ->paginate(25)
             ->withQueryString();
 
         return Inertia::render('Finance/Bills/Index', [
             'bills'   => $bills,
-            'filters' => request()->only('bill_type', 'supplier'),
+            'filters' => request()->only('bill_type', 'supplier', 'due_date_from', 'due_date_to'),
         ]);
     }
 
