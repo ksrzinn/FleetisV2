@@ -39,15 +39,7 @@ export default {
         }
     },
 
-    methods: {
-        applyFilters() {
-            router.get('/bills', {
-                bill_type:     this.billType    || undefined,
-                supplier:      this.supplier    || undefined,
-                due_date_from: this.dueDateFrom || undefined,
-                due_date_to:   this.dueDateTo   || undefined,
-            }, { preserveState: true, replace: true })
-        },
+    computed: {
         activePreset() {
             const pad = (n) => String(n).padStart(2, '0')
             const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
@@ -70,12 +62,23 @@ export default {
             if (this.dueDateFrom === monthStart && this.dueDateTo === monthEnd) return 'month'
             return null
         },
+    },
+
+    methods: {
+        applyFilters() {
+            router.get('/bills', {
+                bill_type:     this.billType    || undefined,
+                supplier:      this.supplier    || undefined,
+                due_date_from: this.dueDateFrom || undefined,
+                due_date_to:   this.dueDateTo   || undefined,
+            }, { preserveState: true, replace: true })
+        },
         applyPreset(preset) {
             const pad = (n) => String(n).padStart(2, '0')
             const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
             const now = new Date()
 
-            if (this.activePreset() === preset) {
+            if (this.activePreset === preset) {
                 this.dueDateFrom = ''
                 this.dueDateTo   = ''
                 this.applyFilters()
@@ -150,24 +153,24 @@ export default {
             </select>
             <input v-model="supplier" type="text" placeholder="Buscar fornecedor..." @input="applyFilters"
                 class="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-            <input v-model="dueDateFrom" type="date" @change="applyFilters"
+            <input v-model="dueDateFrom" type="date" aria-label="Vencimento de" @change="applyFilters"
                 class="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-            <input v-model="dueDateTo" type="date" @change="applyFilters"
+            <input v-model="dueDateTo" type="date" aria-label="Vencimento até" @change="applyFilters"
                 class="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             <button @click="applyPreset('today')"
-                :class="activePreset() === 'today'
+                :class="activePreset === 'today'
                     ? 'rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm'
                     : 'rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'">
                 Hoje
             </button>
             <button @click="applyPreset('week')"
-                :class="activePreset() === 'week'
+                :class="activePreset === 'week'
                     ? 'rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm'
                     : 'rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'">
                 Esta Semana
             </button>
             <button @click="applyPreset('month')"
-                :class="activePreset() === 'month'
+                :class="activePreset === 'month'
                     ? 'rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm'
                     : 'rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'">
                 Este Mês
