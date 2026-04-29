@@ -36,6 +36,8 @@ RUN git config --global --add safe.directory /var/www/html
 
 COPY . .
 
+RUN mkdir -p bootstrap/cache storage/logs storage/framework/cache storage/framework/sessions storage/framework/views
+
 RUN composer install --no-interaction --prefer-dist
 
 RUN npm install && npm run build
