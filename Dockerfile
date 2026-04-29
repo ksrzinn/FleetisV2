@@ -44,6 +44,11 @@ RUN npm install && npm run build
 
 RUN chmod -R 775 storage bootstrap/cache
 
+RUN mkdir -p /var/www/html/public-volume
+
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 9000
 
-CMD ["php-fpm"]
+ENTRYPOINT ["/entrypoint.sh"]
