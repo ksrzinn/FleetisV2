@@ -26,6 +26,7 @@ export default {
     props: {
         freight: Object,
         tollDefault: { type: [Number, String], default: null },
+        ratePrice: { type: Object, default: null },
         estimatedLiters: { type: [Number, String], default: null },
         canComputeFreightValue: { type: Boolean, default: true },
         canDelete: { type: Boolean, default: false },
@@ -175,6 +176,12 @@ export default {
                     <div class="grid grid-cols-3 gap-4 px-6 py-4 text-sm">
                         <dt class="font-medium text-gray-500">Tarifa</dt>
                         <dd class="col-span-2 text-gray-900">{{ freight.pricing_model === 'fixed' ? 'Fixo' : 'Por Km' }}</dd>
+                    </div>
+                    <div v-if="ratePrice" class="grid grid-cols-3 gap-4 px-6 py-4 text-sm">
+                        <dt class="font-medium text-gray-500">{{ freight.pricing_model === 'fixed' ? 'Valor negociado' : 'Tarifa por km' }}</dt>
+                        <dd class="col-span-2 font-semibold text-gray-900">
+                            {{ freight.pricing_model === 'fixed' ? formatCurrency(ratePrice.price) : formatCurrency(ratePrice.rate_per_km) + '/km' }}
+                        </dd>
                     </div>
                     <template v-if="freight.origin">
                         <div class="grid grid-cols-3 gap-4 px-6 py-4 text-sm">

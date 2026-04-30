@@ -23,7 +23,7 @@ class StoreFreightRequest extends FormRequest
             'driver_id'      => ['nullable', 'exists:drivers,id'],
             'fixed_rate_id'  => ['required_if:pricing_model,fixed', 'nullable', 'exists:fixed_freight_rates,id'],
             'per_km_rate_id' => ['required_if:pricing_model,per_km', 'nullable', 'exists:per_km_freight_rates,id'],
-            'origin'         => ['required_if:pricing_model,per_km', 'nullable', 'string', 'max:150'],
+            'origin'         => ['nullable', 'string', 'max:150'],
             'destination'    => ['required_if:pricing_model,per_km', 'nullable', 'string', 'max:150'],
         ];
 

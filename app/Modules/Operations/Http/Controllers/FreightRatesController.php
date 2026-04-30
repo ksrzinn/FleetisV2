@@ -16,7 +16,7 @@ class FreightRatesController extends Controller
         $pricingModel = $request->query('pricing_model');
 
         if ($pricingModel === 'fixed') {
-            $tables = ClientFreightTable::with('fixedRates')
+            $tables = ClientFreightTable::with('fixedRates.prices')
                 ->where('client_id', $clientId)
                 ->where('pricing_model', 'fixed')
                 ->where('active', true)
@@ -26,7 +26,8 @@ class FreightRatesController extends Controller
         }
 
         if ($pricingModel === 'per_km') {
-            $rates = PerKmFreightRate::where('client_id', $clientId)
+            $rates = PerKmFreightRate::with('prices')
+                ->where('client_id', $clientId)
                 ->get(['id', 'client_id', 'state']);
 
             return response()->json(['rates' => $rates]);

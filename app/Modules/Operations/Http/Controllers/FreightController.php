@@ -25,7 +25,7 @@ class FreightController extends Controller
     {
         $this->authorize('viewAny', Freight::class);
 
-        $freights = Freight::with(['client', 'vehicle', 'driver'])
+        $freights = Freight::with(['client', 'vehicle', 'driver', 'fixedRate.prices', 'perKmRate.prices'])
             ->when(request('status'), fn ($q, $s) => $q->where('status', $s))
             ->when(request('search'), fn ($q, $s) => $q->whereHas('client', fn ($cq) => $cq->where('name', 'ilike', "%{$s}%")))
             ->latest()
@@ -67,20 +67,33 @@ class FreightController extends Controller
 
         $freight->load([
             'client', 'vehicle.vehicleType', 'trailer', 'driver',
-            'fixedRate', 'perKmRate',
+            'fixedRate.prices', 'perKmRate.prices',
             'statusHistory.user',
         ]);
 
+        $vehicleTypeId = $freight->vehicle?->vehicle_type_id;
+
         $tollDefault = null;
-        if ($freight->pricing_model === 'fixed' && $freight->fixed_rate_id) {
-            $tollDefault = FixedFreightRatePrice::where('fixed_freight_rate_id', $freight->fixed_rate_id)
-                ->where('vehicle_type_id', $freight->vehicle->vehicle_type_id)
-                ->value('tolls');
+        $ratePrice = null;
+
+        if ($freight->pricing_model === 'fixed' && $freight->fixed_rate_id && $vehicleTypeId) {
+            $ratePrice = FixedFreightRatePrice::where('fixed_freight_rate_id', $freight->fixed_rate_id)
+                ->where('vehicle_type_id', $vehicleTypeId)
+                ->first(['price', 'tolls', 'fuel_cost']);
+
+            $tollDefault = $ratePrice?->tolls;
+        }
+
+        if ($freight->pricing_model === 'per_km' && $freight->per_km_rate_id && $vehicleTypeId) {
+            $ratePrice = PerKmFreightRatePrice::where('per_km_freight_rate_id', $freight->per_km_rate_id)
+                ->where('vehicle_type_id', $vehicleTypeId)
+                ->first(['rate_per_km']);
         }
 
         return Inertia::render('Operations/Show', [
             'freight'               => $freight,
             'tollDefault'           => $tollDefault,
+            'ratePrice'             => $ratePrice,
             'estimatedLiters'       => $freight->estimatedLiters(),
             'canComputeFreightValue' => $this->canComputeFreightValue($freight),
             'canDelete'             => auth()->user()->can('delete', $freight),

@@ -55,7 +55,7 @@ export default {
         canAdvanceStep1() {
             if (!this.form.client_id || !this.form.pricing_model) return false
             if (this.form.pricing_model === 'per_km') {
-                return this.form.origin.trim() !== '' && this.form.destination.trim() !== ''
+                return this.form.destination.trim() !== ''
             }
             return true
         },
@@ -80,6 +80,40 @@ export default {
         reviewTrailer() {
             return this.trailers.find(t => t.id === this.form.trailer_id)
         },
+        availableBrStates() {
+            const codes = new Set(this.perKmRates.map(r => r.state))
+            return Object.fromEntries(Object.entries(this.brStates).filter(([code]) => codes.has(code)))
+        },
+        selectedRatePrices() {
+            if (this.form.pricing_model === 'fixed' && this.form.fixed_rate_id) {
+                return this.fixedRates.find(r => r.id === this.form.fixed_rate_id)?.prices ?? []
+            }
+            if (this.form.pricing_model === 'per_km' && this.form.per_km_rate_id) {
+                return this.perKmRates.find(r => r.id === this.form.per_km_rate_id)?.prices ?? []
+            }
+            return []
+        },
+        availableVehicles() {
+            const typeIds = new Set(this.selectedRatePrices.map(p => p.vehicle_type_id))
+            if (!typeIds.size) return this.vehicles
+            return this.vehicles.filter(v => typeIds.has(v.vehicle_type_id))
+        },
+        reviewPrice() {
+            const vehicleTypeId = this.selectedVehicle?.vehicle_type_id
+            if (!vehicleTypeId) return null
+
+            if (this.form.pricing_model === 'fixed' && this.form.fixed_rate_id) {
+                const rate = this.fixedRates.find(r => r.id === this.form.fixed_rate_id)
+                return rate?.prices?.find(p => p.vehicle_type_id === vehicleTypeId) ?? null
+            }
+
+            if (this.form.pricing_model === 'per_km' && this.form.per_km_rate_id) {
+                const rate = this.perKmRates.find(r => r.id === this.form.per_km_rate_id)
+                return rate?.prices?.find(p => p.vehicle_type_id === vehicleTypeId) ?? null
+            }
+
+            return null
+        },
     },
 
     watch: {
@@ -88,6 +122,11 @@ export default {
         'form.client_freight_table_id'(tableId) {
             this.fixedRates = this.freightTables.find(t => t.id === tableId)?.fixed_rates ?? []
             this.form.fixed_rate_id = ''
+        },
+        availableVehicles(list) {
+            if (this.form.vehicle_id && !list.find(v => v.id === this.form.vehicle_id)) {
+                this.form.vehicle_id = ''
+            }
         },
         'form.per_km_state'(state) {
             const match = this.perKmRates.find(r => r.state === state)
@@ -247,7 +286,7 @@ export default {
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Estado</label>
                                 <select v-model="form.per_km_state" class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                                     <option value="">Selecione o estado...</option>
-                                    <option v-for="(label, code) in brStates" :key="code" :value="code">{{ code }} — {{ label }}</option>
+                                    <option v-for="(label, code) in availableBrStates" :key="code" :value="code">{{ code }} — {{ label }}</option>
                                 </select>
                                 <p v-if="rateError" class="mt-1.5 text-xs text-red-600">{{ rateError }}</p>
                                 <p v-if="form.errors.per_km_rate_id" class="mt-1.5 text-xs text-red-600">{{ form.errors.per_km_rate_id }}</p>
@@ -273,9 +312,10 @@ export default {
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Veículo</label>
                             <select v-model="form.vehicle_id" class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                                 <option value="">Selecione o veículo...</option>
-                                <option v-for="v in vehicles" :key="v.id" :value="v.id">{{ v.license_plate }} — {{ v.brand }} {{ v.model }}</option>
+                                <option v-for="v in availableVehicles" :key="v.id" :value="v.id">{{ v.license_plate }} — {{ v.brand }} {{ v.model }}</option>
                             </select>
                             <p v-if="form.errors.vehicle_id" class="mt-1.5 text-xs text-red-600">{{ form.errors.vehicle_id }}</p>
+                            <p v-if="availableVehicles.length === 0" class="mt-1.5 text-xs text-amber-600">Nenhum veículo disponível para a tarifa selecionada.</p>
                         </div>
 
                         <div v-if="requiresTrailer">
@@ -315,7 +355,7 @@ export default {
                             <span class="text-gray-500">Cliente</span><span class="font-medium text-gray-900">{{ reviewClient?.name }}</span>
                             <span class="text-gray-500">Tipo de tarifa</span><span class="font-medium text-gray-900">{{ form.pricing_model === 'fixed' ? 'Fixo' : 'Por Km' }}</span>
                             <template v-if="form.pricing_model === 'per_km'">
-                                <span class="text-gray-500">Origem</span><span class="font-medium text-gray-900">{{ form.origin }}</span>
+                                <span class="text-gray-500">Origem</span><span class="font-medium text-gray-900">{{ form?.origin && form?.origin != '' ? form?.origin : '-'}}</span>
                                 <span class="text-gray-500">Destino</span><span class="font-medium text-gray-900">{{ form.destination }}</span>
                             </template>
                             <span class="text-gray-500">Veículo</span><span class="font-mono font-medium text-gray-900">{{ reviewVehicle?.license_plate }}</span>
@@ -323,6 +363,18 @@ export default {
                                 <span class="text-gray-500">Reboque</span><span class="font-mono font-medium text-gray-900">{{ reviewTrailer.license_plate }}</span>
                             </template>
                             <span class="text-gray-500">Motorista</span><span class="font-medium text-gray-900">{{ reviewDriver?.name }}</span>
+                            <template v-if="form.pricing_model === 'fixed' && reviewPrice">
+                                <span class="text-gray-500">Valor do frete</span>
+                                <span class="font-semibold text-gray-900">{{ formatCurrency(reviewPrice.price) }}</span>
+                            </template>
+                            <template v-else-if="form.pricing_model === 'per_km' && reviewPrice">
+                                <span class="text-gray-500">Tarifa por km</span>
+                                <span class="font-semibold text-gray-900">{{ formatCurrency(reviewPrice.rate_per_km) }}/km</span>
+                            </template>
+                            <template v-else>
+                                <span class="text-gray-500">Valor do frete</span>
+                                <span class="text-amber-600 text-xs">Sem preço para este tipo de veículo</span>
+                            </template>
                         </div>
                     </div>
                     <div class="px-6 py-4 border-t border-gray-100 flex justify-between">

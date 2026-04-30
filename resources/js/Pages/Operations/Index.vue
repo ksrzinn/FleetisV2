@@ -45,6 +45,18 @@ export default {
         pricingLabel(model) {
             return model === 'fixed' ? 'Fixo' : 'Por Km'
         },
+        ratePrice(freight) {
+            const vehicleTypeId = freight.vehicle?.vehicle_type_id
+            if (!vehicleTypeId) return null
+            if (freight.pricing_model === 'fixed') {
+                return freight.fixed_rate?.prices?.find(p => p.vehicle_type_id === vehicleTypeId)?.price ?? null
+            }
+            return freight.per_km_rate?.prices?.find(p => p.vehicle_type_id === vehicleTypeId)?.rate_per_km ?? null
+        },
+        formatCurrency(val) {
+            if (val === null || val === undefined) return '—'
+            return Number(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+        },
     },
 }
 </script>
@@ -110,7 +122,14 @@ export default {
                             </span>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-700">
-                            {{ freight.freight_value ? `R$ ${Number(freight.freight_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '—' }}
+                            <template v-if="freight.freight_value">
+                                {{ formatCurrency(freight.freight_value) }}
+                            </template>
+                            <template v-else-if="ratePrice(freight) !== null">
+                                <span class="text-gray-500">{{ formatCurrency(ratePrice(freight)) }}</span>
+                                <span v-if="freight.pricing_model === 'per_km'" class="text-xs text-gray-400">/km</span>
+                            </template>
+                            <template v-else>—</template>
                         </td>
                         <td class="px-6 py-4 text-right">
                             <Link :href="`/freights/${freight.id}`" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Ver</Link>
