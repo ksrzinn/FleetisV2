@@ -10,6 +10,17 @@ services:
     volumes:
       - storage:/var/www/html/storage
       - public:/var/www/html/public-volume
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: fleetis
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD", "php-fpm", "-t"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
       - db
 
@@ -24,7 +35,8 @@ services:
       - storage:/var/www/html/storage
       - public:/var/www/html/public
     depends_on:
-      - app
+      app:
+        condition: service_healthy
 
   db:
     image: postgres:15
