@@ -13,9 +13,6 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      DB_DATABASE: fleetis
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
     healthcheck:
       test: ["CMD", "php-fpm", "-t"]
       interval: 10s

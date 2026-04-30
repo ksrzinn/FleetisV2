@@ -24,3 +24,6 @@ yarn-error.log
 /.zed
 /.claude
 /.worktrees
+
+
+docker-compose.override.yml
