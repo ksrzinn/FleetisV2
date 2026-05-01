@@ -14,7 +14,7 @@ services:
       DB_HOST: db
       DB_PORT: 5432
       # DB_USERNAME: fleetis
-      # DB_PASSWORD: Fr@nc@Fl33t!s
+      DB_PASSWORD: Fr@nc@Fl33t!s
     healthcheck:
       test: ["CMD", "php-fpm", "-t"]
       interval: 10s
@@ -45,7 +45,7 @@ services:
     environment:
       POSTGRES_DB: fleetis
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: Fr@nc@Fl33t!s
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d fleetis"]
       interval: 10s
