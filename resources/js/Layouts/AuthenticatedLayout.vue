@@ -152,7 +152,7 @@ export default {
                 <div class="flex gap-2">
                     <Link
                         :href="route('profile.edit')"
-                        class="flex-1 rounded-md px-3 py-1.5 text-center text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                        class="flex-1 rounded-md bold px-3 py-1.5 text-center text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
                     >
                         Perfil
                     </Link>
@@ -160,7 +160,7 @@ export default {
                         :href="route('logout')"
                         method="post"
                         as="button"
-                        class="flex-1 rounded-md px-3 py-1.5 text-center text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                        class="flex-1 rounded-md px-3 py-1.5 text-center text-xs font-medium text-red-300 hover:bg-slate-800 hover:text-white transition-colors"
                     >
                         Sair
                     </Link>
