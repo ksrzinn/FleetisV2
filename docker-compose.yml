@@ -13,6 +13,8 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
+      # DB_USERNAME: fleetis
+      # DB_PASSWORD: Fr@nc@Fl33t!s
     healthcheck:
       test: ["CMD", "php-fpm", "-t"]
       interval: 10s
@@ -40,9 +42,10 @@ services:
     container_name: fleetis_db
     restart: unless-stopped
     environment:
+      DB_HOST: db
       POSTGRES_DB: fleetis
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      # POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
     volumes:
